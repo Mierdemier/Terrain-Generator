@@ -12,10 +12,12 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class TerrainBuilder : MonoBehaviour
 {
+    [SerializeField]
     MeshFilter filter; //Built-in Unity component that (helps) render the mesh.
     Vector3[] verts; //Vertices, the points of the model, stored as 3D coordinates.
     int[] tris; //Triangles, stored as collections of 3 array indices of vertices that they connect.
                 //Obviously the lenght of this array must be a factor of 3, since a triangle has 3 points.
+    Vector2[] uvs; //UV-coordinates are used to map textures to a mesh to colour it in.
     Mesh mesh;  //The data of the complete model.
 
     void Start()
@@ -23,7 +25,7 @@ public class TerrainBuilder : MonoBehaviour
         filter = GetComponent<MeshFilter>();
     }
 
-    void GenerateMesh (float[,] heightmap)
+    public void GenerateMesh (float[,] heightmap)
     {
         //Set up basic variables.
         mesh = new Mesh();
@@ -54,10 +56,22 @@ public class TerrainBuilder : MonoBehaviour
             }
         } 
 
+        //Attach uv coordinates to the shape in case it needs colours.
+        uvs = new Vector2[verts.Length];
+        for (int x = 0, i = 0; x < xSize; x++)
+        {
+            for (int z = 0; z < zSize; z++)
+            {
+                uvs[i] = new Vector2((float)x / xSize, (float)z / zSize);
+                i++;
+            }
+        }
+
         //Update the mesh with built-in Unity stuff.
         mesh.Clear();
         mesh.vertices = verts;
         mesh.triangles = tris;
+        mesh.uv = uvs;
         mesh.RecalculateNormals();
         //And tell the mesh filter about the new mesh.
         filter.mesh = mesh;
