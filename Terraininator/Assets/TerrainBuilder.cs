@@ -16,7 +16,7 @@ public class TerrainBuilder : MonoBehaviour
     MeshFilter filter; //Built-in Unity component that (helps) render the mesh.
     Vector3[] verts; //Vertices, the points of the model, stored as 3D coordinates.
     int[] tris; //Triangles, stored as collections of 3 array indices of vertices that they connect.
-                //Obviously the lenght of this array must be a factor of 3, since a triangle has 3 points.
+                //Obviously the length of this array must be a factor of 3, since a triangle has 3 points.
     Vector2[] uvs; //UV-coordinates are used to map textures to a mesh to colour it in.
     Mesh mesh;  //The data of the complete model.
 
@@ -72,6 +72,11 @@ public class TerrainBuilder : MonoBehaviour
         mesh.vertices = verts;
         mesh.triangles = tris;
         mesh.uv = uvs;
+
+        ColourMap colourer = GetComponent<ColourMap>();
+        Color[] colourMap = colourer.AddColour(heightmap);
+        colourer.TextureFromColourMap(colourMap, xSize, zSize);
+
         mesh.RecalculateNormals();
         //And tell the mesh filter about the new mesh.
         filter.mesh = mesh;
