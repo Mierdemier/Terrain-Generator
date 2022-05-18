@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class ColourMap : MonoBehaviour
 {
+	public float scaleStored = 50f;
+	float[,] heightMapStored;
     public TerrainType[] biomes = new TerrainType[]
     {
-        new TerrainType("water deep", 0.1f * 50f, Color.blue),
-        new TerrainType("water shallow", 0.15f * 50f, Color.cyan),
-        new TerrainType("sand", 0.25f * 50f, Color.yellow),
-        new TerrainType("grass", 0.70f * 50f, Color.green),
-        new TerrainType("rock", 0.95f * 50f, Color.grey),
-        new TerrainType("snow", 1f * 50f, Color.white)
+        new TerrainType("water deep", 0.15f, Color.blue),
+        new TerrainType("water shallow", 0.2f, Color.cyan),
+        new TerrainType("sand", 0.25f, Color.yellow),
+        new TerrainType("grass", 0.35f, Color.green),
+        new TerrainType("rock", 0.90f, Color.grey),
+        new TerrainType("snow", 1f, Color.white)
     };
 
 	public MeshRenderer meshRenderer;
 
-    public Color[] AddColour(float[,] heightMap) {
+    public Color[] AddColour(float[,] heightMap, float scale) {
+		scaleStored = scale;
+		heightMapStored = heightMap;
         int xSize = heightMap.GetLength(0);
         int zSize = heightMap.GetLength(1);
 
@@ -25,7 +29,7 @@ public class ColourMap : MonoBehaviour
 			for (int x = 0; x < xSize; x++) {
 				float currentHeight = heightMap[x, z];
 				for (int i = 0; i < biomes.Length; i++) {
-					if (currentHeight <= biomes[i].height) {
+					if (currentHeight <= biomes[i].height * scale) {
 						colourMap[z * xSize + x] = biomes[i].colour;
 						break;
 					}
@@ -45,6 +49,12 @@ public class ColourMap : MonoBehaviour
 		
 		meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.sharedMaterial.mainTexture = texture;
+	}
+
+	void OnValidate() {
+		//Set the colours of the map.
+        Color[] colourMap = AddColour(heightMapStored, scaleStored);
+        TextureFromColourMap(colourMap, heightMapStored.GetLength(0), heightMapStored.GetLength(1));
 	}
 }
 

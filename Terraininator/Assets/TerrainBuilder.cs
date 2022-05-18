@@ -72,11 +72,6 @@ public class TerrainBuilder : MonoBehaviour
         mesh.vertices = verts;
         mesh.triangles = tris;
         mesh.uv = uvs;
-
-        ColourMap colourer = GetComponent<ColourMap>();
-        Color[] colourMap = colourer.AddColour(heightmap);
-        colourer.TextureFromColourMap(colourMap, xSize, zSize);
-
         mesh.RecalculateNormals();
         //And tell the mesh filter about the new mesh.
         filter.mesh = mesh;
