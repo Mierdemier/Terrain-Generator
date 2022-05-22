@@ -49,7 +49,6 @@ public class CameraScript : MonoBehaviour
     void AdjustPosition(float xDelta, float zDelta) {
         Vector3 direction = transform.localRotation * new Vector3(xDelta, 0f, zDelta).normalized;
         float distance = Mathf.Lerp(moveSpeedMinZoom, moveSpeedMaxZoom, zoom) * Time.deltaTime;
-        Debug.Log("distance: " + distance);
 
         Vector3 curr_position = transform.localPosition;
         curr_position += direction * distance;
