@@ -100,6 +100,12 @@ public class ProceduralGenerator : MonoBehaviour
     //For testing purposes.
     void OnValidate()
     {
-        GetComponent<TerrainBuilder>().GenerateMesh(HeightMap());
+        float[,] heightMap = HeightMap();
+        GetComponent<TerrainBuilder>().GenerateMesh(heightMap);
+        
+        //Set the colours of the map.
+        ColourMap colourer = GetComponent<ColourMap>();
+        Color[] colourMap = colourer.AddColour(heightMap, Scale);
+        colourer.TextureFromColourMap(colourMap, heightMap.GetLength(0), heightMap.GetLength(1));
     }
 }
