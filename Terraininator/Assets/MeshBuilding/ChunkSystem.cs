@@ -29,12 +29,16 @@ public class ChunkSystem : MonoBehaviour
         {
             for (int z = 0; z < numChunks.y; z++)
             {
-                chunks[x,z] = Instantiate(ChunkPrefab, 
+                GameObject newChunk = Instantiate(ChunkPrefab, 
                 transform.position + new Vector3(x * (ChunkSize - 1), 0, z * (ChunkSize - 1)), 
-                Quaternion.identity)
-                              .GetComponent<TerrainBuilder>();
+                Quaternion.identity);
                 
-                chunks[x,z].GenerateMesh(globalHM, new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1)), ChunkSize);
+                chunks[x,z] = newChunk.GetComponent<TerrainBuilder>();
+                Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
+                chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
+                
+                Color[] colours = newChunk.GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize, 50);
+                newChunk.GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
             }
         }
     }
