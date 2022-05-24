@@ -22,6 +22,9 @@ public class ProceduralGenerator : MonoBehaviour
     //  For example: An exponential curve will result in lots of flat terrain, with a couple
     //      very high mountains.
     AnimationCurve HeightCurve;
+
+    [SerializeField] [Range(0, 240)] //Meshes in Unity cannot have more than 240^2 verts.
+    int Size = 200;    //Size of the map.
     
     [SerializeField]
     float Scale = 2f; //Higher values = bigger height differences.
@@ -35,15 +38,15 @@ public class ProceduralGenerator : MonoBehaviour
     float Persistance = 0.5f; //Higher persistance = smaller details contribute more to overall height.
 
     //This function uses the layered noise to create an entire procedural map.
-    public float[,] HeightMap(int xSize, int zSize)
+    public float[,] HeightMap()
     {
-        float[,] map = new float[xSize, zSize];
+        float[,] map = new float[Size, Size];
         float maxHeight = Mathf.NegativeInfinity;
         float minHeight = Mathf.Infinity;
 
-        for (int x = 0; x < xSize; x++)
+        for (int x = 0; x < Size; x++)
         {
-            for (int z = 0; z < zSize; z++)
+            for (int z = 0; z < Size; z++)
             {
                 map[x,z] = LayeredNoise(x, z);
 
@@ -53,9 +56,9 @@ public class ProceduralGenerator : MonoBehaviour
                     minHeight = map[x,z];
             }    
         }
-        for (int x = 0; x < xSize; x++)
+        for (int x = 0; x < Size; x++)
         {
-            for (int z = 0; z < zSize; z++)
+            for (int z = 0; z < Size; z++)
             {
                 map[x,z] = Mathf.InverseLerp(minHeight, maxHeight, map[x,z]);
                 map[x,z] = HeightCurve.Evaluate(map[x,z]) * Scale;
@@ -92,5 +95,17 @@ public class ProceduralGenerator : MonoBehaviour
         }
 
         return height;
+    }
+
+    //For testing purposes.
+    void OnValidate()
+    {
+        float[,] heightMap = HeightMap();
+        GetComponent<TerrainBuilder>().GenerateMesh(heightMap);
+        
+        //Set the colours of the map.
+        ColourMap colourer = GetComponent<ColourMap>();
+        Color[] colourMap = colourer.AddColour(heightMap, Scale);
+        colourer.TextureFromColourMap(colourMap, heightMap.GetLength(0), heightMap.GetLength(1));
     }
 }
