@@ -24,6 +24,7 @@ public class ColourMap : MonoBehaviour
 			for (int x = 0; x < size; x++) 
 			{
 				float currentHeight = heightMap[x + start.x, z + start.y];
+				Debug.Log(currentHeight);
 				for (int i = 0; i < biomes.Length; i++) 
 				{
 					if (currentHeight <= biomes[i].height * scale) 
@@ -47,7 +48,7 @@ public class ColourMap : MonoBehaviour
 		texture.Apply();
 		
 		meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial.mainTexture = texture;
+        meshRenderer.material.mainTexture = texture;
 	}
 }
 
