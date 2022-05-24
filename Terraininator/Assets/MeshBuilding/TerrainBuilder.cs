@@ -25,31 +25,31 @@ public class TerrainBuilder : MonoBehaviour
         filter = GetComponent<MeshFilter>();
     }
 
-    public void GenerateMesh (float[,] heightmap)
+    //Generates a subsection of a heightmap. 
+    //(This is more performant than creating a new heightmap from that subsection)
+    public void GenerateMesh (float[,] heightmap, Vector2Int start, int size)
     {
         //Set up basic variables.
         mesh = new Mesh();
-        int xSize = heightmap.GetLength(0);
-        int zSize = heightmap.GetLength(1);
-        verts = new Vector3[(xSize) * (zSize)];
-        tris = new int[(xSize - 1) * (zSize - 1) * 6];
+        verts = new Vector3[size * size];
+        tris = new int[(size - 1) * (size - 1) * 6];
 
         //Create the shape.
         int v = 0, t = 0; //These numbers keep track of the index of the current vertex/triangle respectively.
-        for (int x = 0; x < xSize; x++)
+        for (int x = 0; x < size; x++)
         {
-            for (int z = 0; z < zSize; z++)
+            for (int z = 0; z < size; z++)
             {
                 //For every point on the heightmap, we spawn a new vertex in the terrain model.
                 //This vertex has the height of the point on the map.
-                verts[v] = new Vector3(x, heightmap[x,z], z);
+                verts[v] = new Vector3(x,  heightmap[x + start.x, z + start.y],  z);
 
                 //Add triangles to this vertex to be able to render the terrain as a continuous mesh.
-                if (x < xSize - 1 && z < zSize - 1) //Verts on the edge of the model should not generate tris!
+                if (x < size - 1 && z < size - 1) //Verts on the edge of the model should not generate tris!
                                                     //(array would be out of bounds)
                 {
-                    AddTriangle(v, v + xSize + 1, v + xSize, ref t);
-                    AddTriangle(v + xSize + 1, v, v + 1, ref t);
+                    AddTriangle(v, v + size + 1, v + size, ref t);
+                    AddTriangle(v + size + 1, v, v + 1, ref t);
                 }
 
                 v++;
@@ -58,11 +58,11 @@ public class TerrainBuilder : MonoBehaviour
 
         //Attach uv coordinates to the shape in case it needs colours.
         uvs = new Vector2[verts.Length];
-        for (int x = 0, i = 0; x < xSize; x++)
+        for (int x = 0, i = 0; x < size; x++)
         {
-            for (int z = 0; z < zSize; z++)
+            for (int z = 0; z < size; z++)
             {
-                uvs[i] = new Vector2((float)x / xSize, (float)z / zSize);
+                uvs[i] = new Vector2((float)x / size, (float)z / size);
                 i++;
             }
         }
