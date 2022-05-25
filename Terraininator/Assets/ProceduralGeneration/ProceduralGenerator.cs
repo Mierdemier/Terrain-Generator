@@ -46,6 +46,8 @@ public class ProceduralGenerator : MonoBehaviour
     //  But we could easily expand it by using multiple colour channels:
     //      e.g.: Red means higher, green means more height differences, blue means more persistance, etc.
     Texture2D BiomeMap;
+    [SerializeField][Range(0,1)]
+    float BiomeInfluence; //How much the biome map influences height.
 
     [Header("Waaaaaaaaarp")]
     [SerializeField]
@@ -63,8 +65,6 @@ public class ProceduralGenerator : MonoBehaviour
     {
 
         float[,] map = new float[xSize, zSize];
-
-        BiomeMap.Reinitialize(xSize, zSize);
         float maxHeight = Mathf.NegativeInfinity;
         float minHeight = Mathf.Infinity;
 
@@ -96,7 +96,7 @@ public class ProceduralGenerator : MonoBehaviour
             for (int z = 0; z < zSize; z++)
             {
                 map[x,z] = Mathf.InverseLerp(minHeight, maxHeight, map[x,z]);
-                map[x,z] *= BiomeMap.GetPixel(x,z).grayscale;
+                map[x,z] -= (1 - BiomeMap.GetPixel((x * BiomeMap.width) / xSize, (z * BiomeMap.height) / zSize).grayscale) * BiomeInfluence;
                 map[x,z] = HeightCurve.Evaluate(map[x,z]) * Scale;
             }
         }

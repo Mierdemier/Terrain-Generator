@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17905372, g: 0.21854402, b: 0.27339214, a: 1}
+  m_IndirectSpecularColor: {r: 0.17905408, g: 0.21854448, b: 0.2733927, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -419,8 +419,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChunkSize: 255
-  numChunks: {x: 1, y: 2}
-  ChunkPrefab: {fileID: 4445038589117119901, guid: e30904a43b0682b4f924ee72ef7e6cc5,
+  numChunks: {x: 2, y: 2}
+  ChunkPrefab: {fileID: 6813269490486257897, guid: 1099475a01e8ecd4d8be4c5dd0f0b454,
     type: 3}
 --- !u!114 &778203016
 MonoBehaviour:
@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447c79e08b3c94a4c970b13572bfbb7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Seed: {x: 100, y: 5}
+  Seed: {x: 5, y: 5}
   Scale: 50
   Zoom: 62
   Ridged: 0
@@ -465,6 +465,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  BiomeMap: {fileID: 2800000, guid: ebf484f8f1d19574aaf54adda83526ad, type: 3}
+  BiomeInfluence: 0.8
   WarpStrength: 0
   WarpSeed: {x: 0, y: 0}
 --- !u!4 &778203017
@@ -544,7 +546,7 @@ GameObject:
   - component: {fileID: 1124709999}
   - component: {fileID: 1124709998}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Ocean
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -622,7 +624,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1124709997}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 11, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 10000, y: 10000, z: 10000}
   m_ConstrainProportionsScale: 0
   m_Children: []
