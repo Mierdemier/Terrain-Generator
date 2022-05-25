@@ -8,6 +8,7 @@ using UnityEngine;
 */
 public class ProceduralGenerator : MonoBehaviour
 {
+    [Header("Base Settings")]
     [SerializeField]
     //The seed of a perlin noise map consists of two values: x and y.
     //  These are simply added to any position on the noise.
@@ -16,17 +17,14 @@ public class ProceduralGenerator : MonoBehaviour
     Vector2 Seed;
 
     [SerializeField]
-    //The height curve is a more versatile way of clamping the final noise value.
-    //  Instead of simply lerping linearly, or setting values outside [0, 1] to 0 or 1,
-    //  the curve can be manipulated to be basically any function.
-    //  For example: An exponential curve will result in lots of flat terrain, with a couple
-    //      very high mountains.
-    AnimationCurve HeightCurve;
-    
-    [SerializeField]
     float Scale = 2f; //Higher values = bigger height differences.
+
     [SerializeField] [Range(50, 250)]
     float Zoom = 75f; //Higher values = more 'zoomed in'.
+    
+    [Header("Advanced Noise Settings")]
+    [SerializeField]
+    bool Ridged = false; //Ridging noise makes it sharper and linier, like a mountain range.
     [SerializeField] [Min(1)]
     int Octaves = 4; //More octaves = more details, but generating takes longer.
     [SerializeField] [Min(1f)]
@@ -34,9 +32,38 @@ public class ProceduralGenerator : MonoBehaviour
     [SerializeField] [Range(0, 1)]
     float Persistance = 0.5f; //Higher persistance = smaller details contribute more to overall height.
 
+    [Header("Height Controls")]
+    [SerializeField]
+    //The height curve is a more versatile way of clamping the final noise value.
+    //  Instead of simply lerping linearly, or setting values outside [0, 1] to 0 or 1,
+    //  the curve can be manipulated to be basically any function.
+    //  For example: An exponential curve will result in lots of flat terrain, with a couple
+    //      very high mountains.
+    AnimationCurve HeightCurve;
+    [SerializeField]
+    //The biome map is a way to control where mountains/hills/flat land will appear.
+    //  Currently it works very simply: the brighter the colour on the map, the higher the terrain there (on average).
+    //  But we could easily expand it by using multiple colour channels:
+    //      e.g.: Red means higher, green means more height differences, blue means more persistance, etc.
+    Texture2D BiomeMap;
+    [SerializeField][Range(0,1)]
+    float BiomeInfluence; //How much the biome map influences height.
+
+    [Header("Waaaaaaaaarp")]
+    [SerializeField]
+    //Warping noise is a practice where you use noise to find the position to sample on the noise map.
+    //  At low levels (~5) it's effect is almost too subtle to notice,
+    //  At medium levels (~20) it makes the terrain look sorta displaced, like dunes in a windy area.
+    //  At high levels (~50) it creates these really cool 'alien' landscapes.
+    float WarpStrength = 0;
+    [SerializeField]
+    Vector2 WarpSeed = Vector2.zero;
+
+
     //This function uses the layered noise to create an entire procedural map.
     public float[,] HeightMap(int xSize, int zSize)
     {
+
         float[,] map = new float[xSize, zSize];
         float maxHeight = Mathf.NegativeInfinity;
         float minHeight = Mathf.Infinity;
@@ -45,7 +72,18 @@ public class ProceduralGenerator : MonoBehaviour
         {
             for (int z = 0; z < zSize; z++)
             {
-                map[x,z] = LayeredNoise(x, z);
+                //Facilitate warping the noise
+                int sampleX = x;
+                int sampleZ = z;
+                if (WarpStrength != 0)
+                {
+                    sampleX += (int)(WarpStrength * LayeredNoise(x + WarpSeed.x, z + WarpSeed.y));
+                    sampleZ += (int)(WarpStrength * LayeredNoise(x + WarpSeed.x, z + WarpSeed.y));
+                }
+
+                map[x,z] = LayeredNoise(sampleX, sampleZ);
+                if (Ridged)
+                    map[x,z] = Mathf.Abs((map[x,z] - 0.5f) * 2f);
 
                 if (map[x,z] > maxHeight)
                     maxHeight = map[x,z];
@@ -58,6 +96,7 @@ public class ProceduralGenerator : MonoBehaviour
             for (int z = 0; z < zSize; z++)
             {
                 map[x,z] = Mathf.InverseLerp(minHeight, maxHeight, map[x,z]);
+                map[x,z] -= (1 - BiomeMap.GetPixel((x * BiomeMap.width) / xSize, (z * BiomeMap.height) / zSize).grayscale) * BiomeInfluence;
                 map[x,z] = HeightCurve.Evaluate(map[x,z]) * Scale;
             }
         }

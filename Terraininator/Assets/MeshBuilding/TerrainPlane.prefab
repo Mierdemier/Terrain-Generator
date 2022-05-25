@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2782142798654048767
+--- !u!1 &6813269490486257897
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2782142798654048762}
-  - component: {fileID: 2782142798654048763}
-  - component: {fileID: 2782142798654048764}
-  - component: {fileID: 2782142798654048766}
+  - component: {fileID: 6813269490486257900}
+  - component: {fileID: 6813269490486257901}
+  - component: {fileID: 6813269490486257898}
+  - component: {fileID: 6813269490486257896}
+  - component: {fileID: 6813269490486257903}
   m_Layer: 0
   m_Name: TerrainPlane
   m_TagString: Untagged
@@ -19,13 +20,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2782142798654048762
+--- !u!4 &6813269490486257900
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2782142798654048767}
+  m_GameObject: {fileID: 6813269490486257897}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -34,21 +35,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &2782142798654048763
+--- !u!33 &6813269490486257901
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2782142798654048767}
+  m_GameObject: {fileID: 6813269490486257897}
   m_Mesh: {fileID: 0}
---- !u!23 &2782142798654048764
+--- !u!23 &6813269490486257898
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2782142798654048767}
+  m_GameObject: {fileID: 6813269490486257897}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -84,16 +85,48 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2782142798654048766
+--- !u!114 &6813269490486257896
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2782142798654048767}
+  m_GameObject: {fileID: 6813269490486257897}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e91e4ebcdf0c3544eb1df5491be4f1a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filter: {fileID: 2782142798654048763}
+  filter: {fileID: 6813269490486257901}
+--- !u!114 &6813269490486257903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6813269490486257897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a5304bf5b464646a9de611ac16ee09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  biomes:
+  - name: Ocean Floor
+    height: 0.01
+    colour: {r: 0.7169812, g: 0.6916163, b: 0.42274833, a: 1}
+  - name: Beach
+    height: 0.03
+    colour: {r: 0.9921569, g: 0.95294124, b: 0.5372549, a: 1}
+  - name: Meadow
+    height: 0.12
+    colour: {r: 0.3058473, g: 0.745283, b: 0.3058473, a: 1}
+  - name: Hill
+    height: 0.3
+    colour: {r: 0.14702742, g: 0.5283019, b: 0.14702742, a: 1}
+  - name: Mountain
+    height: 0.9
+    colour: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  - name: Top
+    height: 1
+    colour: {r: 0.7905838, g: 0.881936, b: 0.8867924, a: 1}
+  meshRenderer: {fileID: 6813269490486257898}
