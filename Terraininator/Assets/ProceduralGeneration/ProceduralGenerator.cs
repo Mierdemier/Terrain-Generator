@@ -40,6 +40,12 @@ public class ProceduralGenerator : MonoBehaviour
     //  For example: An exponential curve will result in lots of flat terrain, with a couple
     //      very high mountains.
     AnimationCurve HeightCurve;
+    [SerializeField]
+    //The biome map is a way to control where mountains/hills/flat land will appear.
+    //  Currently it works very simply: the brighter the colour on the map, the higher the terrain there (on average).
+    //  But we could easily expand it by using multiple colour channels:
+    //      e.g.: Red means higher, green means more height differences, blue means more persistance, etc.
+    Texture2D BiomeMap;
 
     [Header("Waaaaaaaaarp")]
     [SerializeField]
@@ -55,7 +61,10 @@ public class ProceduralGenerator : MonoBehaviour
     //This function uses the layered noise to create an entire procedural map.
     public float[,] HeightMap(int xSize, int zSize)
     {
+
         float[,] map = new float[xSize, zSize];
+
+        BiomeMap.Reinitialize(xSize, zSize);
         float maxHeight = Mathf.NegativeInfinity;
         float minHeight = Mathf.Infinity;
 
@@ -87,6 +96,7 @@ public class ProceduralGenerator : MonoBehaviour
             for (int z = 0; z < zSize; z++)
             {
                 map[x,z] = Mathf.InverseLerp(minHeight, maxHeight, map[x,z]);
+                map[x,z] *= BiomeMap.GetPixel(x,z).grayscale;
                 map[x,z] = HeightCurve.Evaluate(map[x,z]) * Scale;
             }
         }
