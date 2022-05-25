@@ -418,7 +418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fce93c0cbac20f40abcf6cc05871386, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChunkSize: 200
+  ChunkSize: 255
   numChunks: {x: 1, y: 2}
   ChunkPrefab: {fileID: 4445038589117119901, guid: e30904a43b0682b4f924ee72ef7e6cc5,
     type: 3}
@@ -435,6 +435,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: {x: 100, y: 5}
+  Scale: 50
+  Zoom: 62
+  Ridged: 0
+  Octaves: 6
+  Lacunarity: 3
+  Persistance: 0.2
   HeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -459,11 +465,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  Scale: 50
-  Zoom: 62
-  Octaves: 6
-  Lacunarity: 3
-  Persistance: 0.2
+  WarpStrength: 0
+  WarpSeed: {x: 0, y: 0}
 --- !u!4 &778203017
 Transform:
   m_ObjectHideFlags: 0
@@ -619,7 +622,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1124709997}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 11, z: 0}
   m_LocalScale: {x: 10000, y: 10000, z: 10000}
   m_ConstrainProportionsScale: 0
   m_Children: []
