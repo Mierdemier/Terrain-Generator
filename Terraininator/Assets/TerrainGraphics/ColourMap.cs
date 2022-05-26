@@ -42,13 +42,14 @@ public class ColourMap : MonoBehaviour
     public void TextureFromColourMap(Color[] colourMap, int width, int height) 
 	{
 		Texture2D texture = new Texture2D (width, height);
-		texture.filterMode = FilterMode.Point;
+		texture.filterMode = FilterMode.Bilinear;
 		texture.wrapMode = TextureWrapMode.Clamp;
 		texture.SetPixels(colourMap);
 		texture.Apply();
 		
 		meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.material.mainTexture = texture;
+        meshRenderer.material.SetTexture("_mainTexture", texture);
+		meshRenderer.material.SetFloat("_blurRadius", 1f / (float)(height));
 	}
 }
 
