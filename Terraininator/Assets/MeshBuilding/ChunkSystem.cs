@@ -10,6 +10,7 @@ public class ChunkSystem : MonoBehaviour
     [SerializeField]
     GameObject ChunkPrefab;
 
+
     ProceduralGenerator generator;
     float[,] globalHM;  //Global heightmap, don't lose this!
     TerrainBuilder[,] chunks; //Contains references to every chunk.
