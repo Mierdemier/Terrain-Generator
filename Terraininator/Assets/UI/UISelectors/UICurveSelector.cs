@@ -1,14 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UISelector<T> : MonoBehaviour
+//Unity does not allow you to make generic components :(
+//So we will have to create a copy of this class for every type of selector (luckily only 2 right now)
+public class UICurveSelector : MonoBehaviour
 {
     [SerializeField]
     string[] Names;
     [SerializeField]
     Sprite[] Sprites;
     [SerializeField]
-    <T>[]   Objects;
+    AnimationCurve[]  Objects;
 
     [SerializeField]
     Image previousImage;
@@ -35,7 +37,7 @@ public class UISelector<T> : MonoBehaviour
             nameText.text = Names[selection];
     }
 
-    public <T> GetSelected()
+    public AnimationCurve GetSelected()
     {
         return Objects[selection];
     }
