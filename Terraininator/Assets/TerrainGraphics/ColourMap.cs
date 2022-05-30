@@ -3,40 +3,33 @@ using UnityEngine;
 public class ColourMap : MonoBehaviour
 {
 	[SerializeField]
-    TerrainType[] biomes = new TerrainType[]
-    {
-        new TerrainType("water deep", 0.15f, Color.blue),
-        new TerrainType("water shallow", 0.2f, Color.cyan),
-        new TerrainType("sand", 0.25f, Color.yellow),
-        new TerrainType("grass", 0.35f, Color.green),
-        new TerrainType("rock", 0.90f, Color.grey),
-        new TerrainType("snow", 1f, Color.white)
-    };
+    TerrainType[] biomes;
 
 	[SerializeField]
 	MeshRenderer meshRenderer;
+	[SerializeField]
+	ComputeShader colourCalculator;
 
     public Color[] AddColour(float[,] heightMap, Vector2Int start, int size, float scale)
 	{
-        Color[] colourMap = new Color[size * size];
-		for (int z = 0; z < size; z++) 
-		{
-			for (int x = 0; x < size; x++) 
-			{
-				float currentHeight = heightMap[x + start.x, z + start.y];
-				Debug.Log(currentHeight);
-				for (int i = 0; i < biomes.Length; i++) 
-				{
-					if (currentHeight <= biomes[i].height * scale) 
-					{
-						colourMap[z * size + x] = biomes[i].colour;
-						break;
-					}
-				}
-			}
-		}
+		ComputeBuffer heightBuffer = new ComputeBuffer(heightMap.GetLength(0) * heightMap.GetLength(1), sizeof(float));
+		ComputeBuffer biomeBuffer = new ComputeBuffer(biomes.Length, 5 * sizeof(float));
+		ComputeBuffer colourBuffer = new ComputeBuffer(size * size, 4 * sizeof(float));
 
-		return colourMap;
+		heightBuffer.SetData(heightMap);
+
+		colourCalculator.SetBuffer(0, "heightmap", heightBuffer);
+		colourCalculator.SetBuffer(0, "biomes", biomeBuffer);
+		colourCalculator.SetBuffer(0, "colours", colourBuffer);
+		colourCalculator.SetInt("size", size);
+		colourCalculator.SetInts("start", start.x, start.y);
+		colourCalculator.SetInt("numBiomes", biomes.Length);
+
+		colourCalculator.Dispatch(0, size / 8, size / 8, 1);
+
+		Color[] colours = new Color[size * size];
+		colourBuffer.GetData(colours);
+		return colours;
     }
 
     public void TextureFromColourMap(Color[] colourMap, int width, int height) 
@@ -56,13 +49,11 @@ public class ColourMap : MonoBehaviour
 [System.Serializable]
 public struct TerrainType
 {
-	public string name;
 	public float height;
 	public Color colour;
     
-    public TerrainType(string name2, float height2, Color colour2) 
+    public TerrainType(float height2, Color colour2) 
 	{
-        name = name2;
         height = height2;
         colour = colour2;
     }
