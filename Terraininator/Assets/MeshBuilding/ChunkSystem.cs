@@ -10,6 +10,7 @@ public class ChunkSystem : MonoBehaviour
     [SerializeField]
     GameObject ChunkPrefab;
 
+
     ProceduralGenerator generator;
     float[,] globalHM;  //Global heightmap, don't lose this!
     TerrainBuilder[,] chunks; //Contains references to every chunk.
@@ -19,11 +20,8 @@ public class ChunkSystem : MonoBehaviour
     {
         //Find generator.
         generator = GetComponent<ProceduralGenerator>();
-        
-        //Initialise heightmap with procedural terrain.
-        globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
-        //Spawn terrain chunks and give them the correct section of the heightmap to render.
+        //Spawn terrain chunks
         chunks = new TerrainBuilder[numChunks.x , numChunks.y];
         for(int x = 0; x < numChunks.x; x++)
         {
@@ -34,14 +32,32 @@ public class ChunkSystem : MonoBehaviour
                 transform.position + new Vector3(x * (ChunkSize - 1), 0, z * (ChunkSize - 1)), 
                 Quaternion.identity);
                 
-                //Build a mesh for the chunk and store a reference to it.
+                //Store a reference to the chunk.
                 chunks[x,z] = newChunk.GetComponent<TerrainBuilder>();
+            }
+        }
+
+        //Render the heightmap using the chunks you made.
+        GenerateFromScratch();
+    }
+
+    public void GenerateFromScratch()
+    {
+        //Initialise heightmap with procedural terrain.
+        globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
+
+        //Give terrain chunks the correct section of the heightmap to render.
+        for(int x = 0; x < numChunks.x; x++)
+        {
+            for (int z = 0; z < numChunks.y; z++)
+            {
+                //Build a mesh for the chunk and store a reference to it.
                 Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
                 chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
                 
                 //Add procedural colours.
-                Color[] colours = newChunk.GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize, 50);
-                newChunk.GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
+                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize, 50);
+                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
             }
         }
     }
