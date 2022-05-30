@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(ProceduralGenerator))]
 public class ChunkSystem : MonoBehaviour
@@ -43,6 +44,7 @@ public class ChunkSystem : MonoBehaviour
 
     public void GenerateFromScratch()
     {
+        DateTime time = DateTime.Now;
         //Initialise heightmap with procedural terrain.
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
@@ -60,6 +62,8 @@ public class ChunkSystem : MonoBehaviour
                 chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
             }
         }
+
+        Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }
 
     //TODO
