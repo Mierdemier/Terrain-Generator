@@ -3,14 +3,14 @@ using UnityEngine.UI;
 
 //Unity does not allow you to make generic components :(
 //So we will have to create a copy of this class for every type of selector (luckily only 2 right now)
-public class UICurveSelector : MonoBehaviour
+public class UITextureSelector : MonoBehaviour
 {
     [SerializeField]
     string[] Names;
     [SerializeField]
     Sprite[] Sprites;
     [SerializeField]
-    AnimationCurve[]  Objects;
+    Texture2D[]  Objects;
 
     [SerializeField]
     Image previousImage;
@@ -42,7 +42,7 @@ public class UICurveSelector : MonoBehaviour
             nameText.text = Names[selection];
     }
 
-    public AnimationCurve GetSelected()
+    public Texture2D GetSelected()
     {
         return Objects[selection];
     }
