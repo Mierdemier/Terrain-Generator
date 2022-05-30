@@ -1,16 +1,27 @@
 using UnityEngine;
 
+//The ColourMap class contains the methods and data necessary to create a texture for a terrain chunk.
+//It has two public methods:
+//	AddColour() procedurally creates an array of colours that we think fit well with the heightmap.
+//		(e.g. snow for mountain tops, yellow-ish for beaches, etc.)
+//		The plan is that the user will be able to alter the procedural colouring in a menu at some point!
+//
+//	TextureFromColourMap() creates a texture from an array of colours and assigns it to the terrain chunk.
+//		This array of colours *could* be from AddColour(), or it could be something the user manually drew.
 public class ColourMap : MonoBehaviour
 {
 	[SerializeField]
-    TerrainType[] biomes;
+    TerrainType[] biomes; //The terrain types used for procedural colours.
 
 	[SerializeField]
 	MeshRenderer meshRenderer;
 	[SerializeField]
 	ComputeShader colourCalculator;
 
-    public Color[] AddColour(float[,] heightMap, Vector2Int start, int size, float scale)
+	//Returns an array of colours fitted to this subsection of the heightmap.
+	//	It is not performant to calculate this on the CPU (takes about 30 seconds per chunk on my laptop)
+	//	So we will use this method to dispatch a ComputeShader instead.
+    public Color[] AddColour(float[,] heightMap, Vector2Int start, int size)
 	{
 		//Create shared memory with GPU.
 		ComputeBuffer heightBuffer = new ComputeBuffer(size * size, sizeof(float));
@@ -18,7 +29,7 @@ public class ColourMap : MonoBehaviour
 		ComputeBuffer biomeColourBuffer = new ComputeBuffer(biomes.Length, 4 * sizeof(float));
 		ComputeBuffer colourBuffer = new ComputeBuffer(size * size, 4 * sizeof(float));
 
-		//Turn everything into arrays of floats, since the GPU doesn't know what TerrainTypes float[,] are.
+		//Turn everything into arrays of floats, since the GPU doesn't know what TerrainTypes or float[,] are.
 		float[] biomeHeights = new float[biomes.Length];
 		Color[] biomeColours = new Color[biomes.Length];
 		for (int i = 0; i < biomes.Length; i++)
@@ -62,7 +73,7 @@ public class ColourMap : MonoBehaviour
     public void TextureFromColourMap(Color[] colourMap, int width, int height) 
 	{
 		Texture2D texture = new Texture2D (width, height);
-		texture.filterMode = FilterMode.Bilinear;
+		texture.filterMode = FilterMode.Bilinear; //Makes texture looks less blocky.
 		texture.wrapMode = TextureWrapMode.Clamp;
 		texture.SetPixels(colourMap);
 		texture.Apply();
@@ -76,11 +87,13 @@ public class ColourMap : MonoBehaviour
 [System.Serializable]
 public struct TerrainType
 {
+	public string name;
 	public float height;
 	public Color colour;
     
-    public TerrainType(float height2, Color colour2) 
+    public TerrainType(string name2, float height2, Color colour2) 
 	{
+		name = name2;
         height = height2;
         colour = colour2;
     }

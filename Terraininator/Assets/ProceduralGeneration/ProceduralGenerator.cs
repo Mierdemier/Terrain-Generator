@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /*
-    This class handles the procedural generation of the terrain.
-    Currently, HeightMap() is the only function intended to be called from the outside:
+    This class handles the procedural generation of the terrain heights.
+    HeightMap() is the only function intended to be called from the outside:
         LayeredNoise() only helps HeightMap().
     The HeightMap() function returns a float[,] of heights.
 */
@@ -55,7 +55,6 @@ public class ProceduralGenerator : MonoBehaviour
     public Vector2 WarpSeed = Vector2.zero;
 
 
-    //This function uses the layered noise to create an entire procedural map.
     public float[,] HeightMap(int xSize, int zSize)
     {
 
@@ -91,7 +90,10 @@ public class ProceduralGenerator : MonoBehaviour
             for (int z = 0; z < zSize; z++)
             {
                 map[x,z] = Mathf.InverseLerp(minHeight, maxHeight, map[x,z]);
-                map[x,z] -= (1 - BiomeMap.GetPixel((x * BiomeMap.width) / xSize, (z * BiomeMap.height) / zSize).grayscale) * BiomeInfluence;
+                
+                map[x,z] -= (1 - BiomeMap.GetPixel((x * BiomeMap.width) / xSize, 
+                            (z * BiomeMap.height) / zSize).grayscale) * BiomeInfluence;
+
                 map[x,z] = HeightCurve.Evaluate(map[x,z]) * Scale;
             }
         }

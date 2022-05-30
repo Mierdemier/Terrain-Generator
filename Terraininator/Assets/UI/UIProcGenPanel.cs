@@ -2,6 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+//Class to be attached to the 'Procedural Generation' tab as a component.
+//It handles some small utilities:
+//  Automatically initialises the UI display elements to the default values so I don't have to keep changing them.
+//  Generate() should be called whenever the 'Generate!' button is pressed.
+//      It communicates the values from the UI to the ChunkSystem/ProceduralGenerator.
+//      And tells them to make a new map.
+
 public class UIProcGenPanel : MonoBehaviour
 {
     [Header("Script References")]
