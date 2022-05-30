@@ -66,6 +66,11 @@ public class ChunkSystem : MonoBehaviour
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }
 
+    void OnValidate()
+    {
+        ChunkSize -= ChunkSize % 8;
+    }
+
     //TODO
     //Functions that will help with altering parts of the heightmap (say, using a brush):
 
