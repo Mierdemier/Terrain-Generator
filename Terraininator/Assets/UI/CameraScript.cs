@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
+    GameObject generatorObj;
+    ProceduralGenerator procGenScript;
+    ChunkSystem chunkSysScript;
+
     Transform swivel, stick;
     [SerializeField]
     float stickMinZoom, stickMaxZoom;
@@ -20,6 +24,12 @@ public class CameraScript : MonoBehaviour
         stick = swivel.GetChild(0);
     }
     
+    void Start() {
+        generatorObj = GameObject.Find("GeneratorObject");
+        procGenScript = generatorObj.GetComponent<ProceduralGenerator>();
+        chunkSysScript = generatorObj.GetComponent<ChunkSystem>();
+    }
+
     void Update() {
         float zoomDelta = Input.GetAxis("Mouse ScrollWheel");
         if(zoomDelta != 0f) {
@@ -38,6 +48,11 @@ public class CameraScript : MonoBehaviour
         }
     }
 
+    public void setZoom(float minZoom, float maxZoom) {
+        stickMaxZoom = maxZoom;
+        stickMinZoom = minZoom;
+    }
+
     void AdjustZoom(float delta) {
         zoom = Mathf.Clamp01(zoom + delta);
         
@@ -54,7 +69,17 @@ public class CameraScript : MonoBehaviour
 
         Vector3 curr_position = transform.localPosition;
         curr_position += direction * distance;
-        transform.localPosition = curr_position;
+        transform.localPosition = ClampPosition(curr_position);
+    }
+
+    Vector3 ClampPosition(Vector3 position) {
+        float xMax = chunkSysScript.numChunks.x * chunkSysScript.ChunkSize;
+        position.x = Mathf.Clamp(position.x, 0f, xMax);
+
+        float zMax = chunkSysScript.numChunks.y * chunkSysScript.ChunkSize;
+        position.z = Mathf.Clamp(position.z, 0f, zMax);
+
+        return position;
     }
 
     void AdjustRotation(float rotationDelta) {
