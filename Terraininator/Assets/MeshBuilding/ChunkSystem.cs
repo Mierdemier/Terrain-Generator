@@ -2,9 +2,15 @@ using UnityEngine;
 using System;
 
 [RequireComponent(typeof(ProceduralGenerator))]
+//The ChunkSystem is the central class that stores the state of the entire terrain as a whole.
+//  In Start(), it prepares the terrain by creating the correct amount of chunks, and Generating From Scratch.
+//  GenerateFromScratch() is currently the only public method. It fills the chunks with procedural terrain.
+//                        This overwrites the terrain that's currently there!
 public class ChunkSystem : MonoBehaviour
 {
-    [SerializeField][Range(1, 255)]
+
+    [SerializeField][Range(8, 248)]
+    //The size of each (square) chunk. Must be a multiple of 8!
     public int ChunkSize = 200;
     [SerializeField]
     public Vector2Int numChunks;
@@ -29,7 +35,7 @@ public class ChunkSystem : MonoBehaviour
         {
             for (int z = 0; z < numChunks.y; z++)
             {
-                //Create a new GameObject to hold the chunk.
+                //Create a new GameObject in the correct position to hold the chunk.
                 GameObject newChunk = Instantiate(ChunkPrefab, 
                 transform.position + new Vector3(x * (ChunkSize - 1), 0, z * (ChunkSize - 1)), 
                 Quaternion.identity);
@@ -46,6 +52,7 @@ public class ChunkSystem : MonoBehaviour
     public void GenerateFromScratch()
     {
         DateTime time = DateTime.Now;
+
         //Initialise heightmap with procedural terrain.
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
@@ -54,12 +61,12 @@ public class ChunkSystem : MonoBehaviour
         {
             for (int z = 0; z < numChunks.y; z++)
             {
-                //Build a mesh for the chunk and store a reference to it.
+                //Build a mesh for the chunk.
                 Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
                 chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
                 
                 //Add procedural colours.
-                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize, 50);
+                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize);
                 chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
             }
         }
@@ -73,6 +80,7 @@ public class ChunkSystem : MonoBehaviour
 
     void OnValidate()
     {
+        //Enforce ChunkSize being a multiple of 8.
         ChunkSize -= ChunkSize % 8;
     }
 

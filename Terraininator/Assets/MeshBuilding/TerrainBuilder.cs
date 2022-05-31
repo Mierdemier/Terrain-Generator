@@ -7,9 +7,10 @@ using UnityEngine;
     In the GenerateMesh function we generate a complete mesh from scratch and assign it to the filter.
         As input it takes a 2-dimensional float array, which represent the heights of each point on the terrain.
         GenerateMesh() should be called by another script.
-    AddTriangle() is just a utility function that should probably not be fucked with outside of this class.
+    AddTriangle() is just a utility function that should probably not be messed with outside of this class.
 */
 [RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
 public class TerrainBuilder : MonoBehaviour
 {
     [SerializeField]

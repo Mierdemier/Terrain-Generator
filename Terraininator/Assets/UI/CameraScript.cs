@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraScript : MonoBehaviour
@@ -9,10 +7,14 @@ public class CameraScript : MonoBehaviour
     ChunkSystem chunkSysScript;
 
     Transform swivel, stick;
-    public float stickMinZoom, stickMaxZoom;
-    public float swivelMinZoom, swivelMaxZoom;
-    public float moveSpeedMinZoom, moveSpeedMaxZoom;
-    public float rotationSpeed;
+    [SerializeField]
+    float stickMinZoom, stickMaxZoom;
+    [SerializeField]
+    float swivelMinZoom, swivelMaxZoom;
+    [SerializeField]
+    float moveSpeedMinZoom, moveSpeedMaxZoom;
+    [SerializeField]
+    float rotationSpeed;
     
     float zoom = 1f;
     float rotationAngle;

@@ -111,17 +111,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   biomes:
-  - height: 0.01
+  - name: Ocean Floor
+    height: 0.01
     colour: {r: 0.7169812, g: 0.6916163, b: 0.42274833, a: 1}
-  - height: 0.03
+  - name: Beach
+    height: 0.03
     colour: {r: 0.9921569, g: 0.95294124, b: 0.5372549, a: 1}
-  - height: 0.12
+  - name: Meadow
+    height: 0.12
     colour: {r: 0.3058473, g: 0.745283, b: 0.3058473, a: 1}
-  - height: 0.3
+  - name: Hill
+    height: 0.3
     colour: {r: 0.14702742, g: 0.5283019, b: 0.14702742, a: 1}
-  - height: 0.9
+  - name: Mountain
+    height: 0.8
     colour: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  - height: 1
+  - name: Top
+    height: 1
     colour: {r: 0.7905838, g: 0.881936, b: 0.8867924, a: 1}
   meshRenderer: {fileID: 6813269490486257898}
   colourCalculator: {fileID: 7200000, guid: 0baed4bef9b14c0469d6a685c9e54643, type: 3}
