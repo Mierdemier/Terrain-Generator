@@ -5,9 +5,9 @@ using System;
 public class ChunkSystem : MonoBehaviour
 {
     [SerializeField][Range(1, 255)]
-    int ChunkSize = 200;
+    public int ChunkSize = 200;
     [SerializeField]
-    Vector2Int numChunks;
+    public Vector2Int numChunks;
     [SerializeField]
     GameObject ChunkPrefab;
 
@@ -15,7 +15,8 @@ public class ChunkSystem : MonoBehaviour
     ProceduralGenerator generator;
     float[,] globalHM;  //Global heightmap, don't lose this!
     TerrainBuilder[,] chunks; //Contains references to every chunk.
-
+    [SerializeField]
+    CameraScript camera;
 
     void Start()
     {
@@ -62,6 +63,10 @@ public class ChunkSystem : MonoBehaviour
                 chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
             }
         }
+
+        //Set camera zoom
+        Debug.Log("Scale:" + generator.Scale);
+        camera.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
 
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }
