@@ -57,25 +57,32 @@ public class ChunkSystem : MonoBehaviour
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
         //Give terrain chunks the correct section of the heightmap to render.
-        for(int x = 0; x < numChunks.x; x++)
-        {
-            for (int z = 0; z < numChunks.y; z++)
-            {
-                //Build a mesh for the chunk.
-                Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
-                chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
-                
-                //Add procedural colours.
-                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize);
-                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
-            }
-        }
+        GenerateFromMap(globalHM);
 
         //Set camera zoom
         Debug.Log("Scale:" + generator.Scale);
         camera.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
 
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
+    }
+
+    //Added by Falko
+    public void GenerateFromMap(float[,] heightMap)
+    {
+        //Give terrain chunks the correct section of the heightmap to render.
+        for(int x = 0; x < numChunks.x; x++)
+        {
+            for (int z = 0; z < numChunks.y; z++)
+            {
+                //Build a mesh for the chunk.
+                Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
+                chunks[x,z].GenerateMesh(heightMap, start, ChunkSize);
+                
+                //Add procedural colours.
+                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(heightMap, start, ChunkSize);
+                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
+            }
+        }
     }
 
     void OnValidate()
@@ -86,6 +93,7 @@ public class ChunkSystem : MonoBehaviour
 
     //TODO
     //Functions that will help with altering parts of the heightmap (say, using a brush):
+    public float[,] getHeightMap() {return globalHM;}
 
     //FindChunks(), a function that returns the chunks in a certain area,
 
