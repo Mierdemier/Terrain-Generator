@@ -69,6 +69,7 @@ public class ChunkSystem : MonoBehaviour
     //Added by Falko
     public void GenerateFromMap(float[,] heightMap)
     {
+        this.globalHM = heightMap;
         //Give terrain chunks the correct section of the heightmap to render.
         for(int x = 0; x < numChunks.x; x++)
         {
