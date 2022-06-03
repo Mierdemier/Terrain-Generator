@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class mouseInput : MonoBehaviour
 {
-    Brush brush = new Brush();
+    Brush brush;
+
+    void Start() {
+        brush = new Brush();
+    }
 
     // Update is called once per frame
     void Update()
@@ -17,8 +21,8 @@ public class mouseInput : MonoBehaviour
                 Vector3 hitPosition = hitData.point;
 
                 //Do something
-                brush.Apply(hitData);
                 Debug.Log(hitPosition.ToString());
+                brush.Apply(hitData);
             }
         }
     }

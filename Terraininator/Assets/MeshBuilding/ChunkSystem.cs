@@ -27,10 +27,10 @@ public class ChunkSystem : MonoBehaviour
     void Start()
     {
         //Find generator.
-        generator = GetComponent<ProceduralGenerator>();
+        this.generator = GetComponent<ProceduralGenerator>();
 
         //Spawn terrain chunks
-        chunks = new TerrainBuilder[numChunks.x , numChunks.y];
+        this.chunks = new TerrainBuilder[numChunks.x , numChunks.y];
         for(int x = 0; x < numChunks.x; x++)
         {
             for (int z = 0; z < numChunks.y; z++)
@@ -56,12 +56,11 @@ public class ChunkSystem : MonoBehaviour
         //Initialise heightmap with procedural terrain.
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
-        //Give terrain chunks the correct section of the heightmap to render.
         GenerateFromMap(globalHM);
 
         //Set camera zoom
         Debug.Log("Scale:" + generator.Scale);
-        camera.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
+        // camera.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
 
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }
@@ -94,7 +93,7 @@ public class ChunkSystem : MonoBehaviour
 
     //TODO
     //Functions that will help with altering parts of the heightmap (say, using a brush):
-    public float[,] getHeightMap() {return globalHM;}
+    public float[,] getHeightMap() {return this.globalHM;}
 
     //FindChunks(), a function that returns the chunks in a certain area,
 

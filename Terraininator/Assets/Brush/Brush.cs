@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Brush : MonoBehaviour
+public class Brush
 {
     private ChunkSystem chunkSystem;
     private GameObject genObject;
@@ -16,7 +16,7 @@ public class Brush : MonoBehaviour
         radius = 5;
         power = 10;
         genObject = GameObject.Find("GeneratorObject");
-        chuckSystem = genObject.GetComponent<ChunkSystem>();
+        chunkSystem = genObject.GetComponent<ChunkSystem>();
     }
     
 
@@ -25,10 +25,13 @@ public class Brush : MonoBehaviour
         int xElement = (int) hitPosition.x;
         int yElement = (int) hitPosition.z;
 
+        Debug.Log("Getting heightmap");
         //Get heightmap.
+        if(chunkSystem == null) {Debug.Log("I know the issue"); }
         float[,] map = chunkSystem.getHeightMap();
         int xSize = map.GetLength(0);
         int ySize = map.GetLength(1);
+        Debug.Log("Got heightmap");
 
         //Edit terrain in heightmap.
         int threshold = this.radius * this.radius;
@@ -53,6 +56,6 @@ public class Brush : MonoBehaviour
         }
 
         //Generate updated terrain.
-        chuckSystem.GenerateFromMap(map);
+        chunkSystem.GenerateFromMap(map);
     }
 }
