@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Brush
+public class Brush : MonoBehaviour
 {
-    private ChunkSystem chunkSystem;
-    private GameObject genObject;
+    [SerializeField]
+    ChunkSystem chunkSystem;
 
     int radius;
     int power;
     public enum DrawMode {Circle, Square};
-    public DrawMode mode = DrawMode.Square;
+    public DrawMode mode;
 
     void Start() {
-        radius = 5;
+        radius = 10;
         power = 10;
-        genObject = GameObject.Find("GeneratorObject");
-        chunkSystem = genObject.GetComponent<ChunkSystem>();
+        mode = DrawMode.Circle;
     }
     
 
@@ -25,13 +24,10 @@ public class Brush
         int xElement = (int) hitPosition.x;
         int yElement = (int) hitPosition.z;
 
-        Debug.Log("Getting heightmap");
         //Get heightmap.
-        if(chunkSystem == null) {Debug.Log("I know the issue"); }
         float[,] map = chunkSystem.getHeightMap();
         int xSize = map.GetLength(0);
         int ySize = map.GetLength(1);
-        Debug.Log("Got heightmap");
 
         //Edit terrain in heightmap.
         int threshold = this.radius * this.radius;

@@ -65,7 +65,7 @@ public class ChunkSystem : MonoBehaviour
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }
 
-    //Added by Falko
+    //This function takes a heightmap and generates the whole terrain from there.
     public void GenerateFromMap(float[,] heightMap)
     {
         this.globalHM = heightMap;

@@ -7,7 +7,7 @@ public class mouseInput : MonoBehaviour
     Brush brush;
 
     void Start() {
-        brush = new Brush();
+        brush = GetComponent<Brush>();
     }
 
     // Update is called once per frame
