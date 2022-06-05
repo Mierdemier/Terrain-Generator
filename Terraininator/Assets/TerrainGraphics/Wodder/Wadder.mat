@@ -90,7 +90,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _Depth: 0.75
+    - _Depth: 1.3514235
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -121,10 +121,10 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.18221189, g: 0.30641523, b: 0.7830189, a: 1}
     - _Color: {r: 0.18221185, g: 0.3064152, b: 0.7830188, a: 1}
-    - _DeepColour: {r: 0.05506107, g: 0.15410174, b: 0.5471698, a: 1}
+    - _DeepColour: {r: 0.45495632, g: 0.08313215, b: 0.08313215, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColour: {r: 0.904889, g: 0.9288596, b: 0.95283014, a: 1}
-    - _ShallowColour: {r: 0.26100624, g: 0.8283169, b: 1, a: 0.78431374}
+    - _ShallowColour: {r: 0.9386171, g: 1, b: 0, a: 0.78431374}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5950546616617474451
