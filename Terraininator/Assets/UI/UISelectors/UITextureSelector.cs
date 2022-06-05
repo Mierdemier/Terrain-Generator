@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 
 //A selector is a component that should be attached to a menu to help with selecting one from multiple objects.
@@ -27,7 +28,7 @@ public class UITextureSelector : MonoBehaviour
     [SerializeField]
     Image nextImage;
     [SerializeField]
-    Text nameText;  //Optional. Leave it as null if you don't need it.
+    TMP_Text nameText;  //Optional. Leave it as null if you don't need it.
 
     int selection = 0;
 

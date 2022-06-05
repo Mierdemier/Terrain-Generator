@@ -5,9 +5,13 @@ public class UIGraphicsPanel : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    Transform oceanTransform;
+    Transform OceanTransform;
     [SerializeField]
-    Material oceanMat;
+    Material OceanMat;
+    [Space]
+    
+    [SerializeField]
+    Light Sun;
 
     [Header("UI Elements")]
     [SerializeField]
@@ -16,26 +20,43 @@ public class UIGraphicsPanel : MonoBehaviour
     Image WaterShallowSquare;
     [SerializeField]
     Image WaterDeepSquare;
+    [Space]
+
+    [SerializeField]
+    UISkySelector SkySelector;
 
     void Start()
     {
-        WaterLevelSlider.value = oceanTransform.position.y;
-        WaterShallowSquare.color = oceanMat.GetColor("_ShallowColour");
-        WaterDeepSquare.color = oceanMat.GetColor("_DeepColour");
+        WaterLevelSlider.value = OceanTransform.position.y;
+        WaterShallowSquare.color = OceanMat.GetColor("_ShallowColour");
+        WaterDeepSquare.color = OceanMat.GetColor("_DeepColour");
     }
 
     public void SetWaterLevel(float level)
     {
-        oceanTransform.position = new Vector3(0, level, 0);
+        OceanTransform.position = new Vector3(0, level, 0);
     }
 
     public void SetWaterDepth(float depth)
     {
-        oceanMat.SetFloat("_Depth", depth);
+        OceanMat.SetFloat("_Depth", depth);
     }
 
     public void SetWaterColour(Color colour, string colourVariable)
     {
-        oceanMat.SetColor(colourVariable, colour);
+        OceanMat.SetColor(colourVariable, colour);
+    }
+
+    public void SetSky()
+    {
+        SkyData sky = SkySelector.GetSelected();
+
+        RenderSettings.skybox = sky.Skybox;
+
+        RenderSettings.ambientIntensity = sky.AmbientIntensity;
+
+        Sun.color = sky.SunColour;
+        Sun.intensity = sky.SunIntensity;
+        Sun.transform.rotation = Quaternion.Euler(sky.SunAngle.x, sky.SunAngle.y, sky.SunAngle.z);
     }
 }
