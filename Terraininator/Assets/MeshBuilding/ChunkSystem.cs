@@ -72,7 +72,7 @@ public class ChunkSystem : MonoBehaviour
         }
 
         //Set camera zoom
-        camera.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
+        camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
 
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }
