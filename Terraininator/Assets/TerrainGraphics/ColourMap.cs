@@ -18,6 +18,8 @@ public class ColourMap : MonoBehaviour
 	[SerializeField]
 	ComputeShader colourCalculator;
 
+	private Color[] colours;
+
 	//Returns an array of colours fitted to this subsection of the heightmap.
 	//	It is not performant to calculate this on the CPU (takes about 30 seconds per chunk on my laptop)
 	//	So we will use this method to dispatch a ComputeShader instead.
@@ -58,8 +60,8 @@ public class ColourMap : MonoBehaviour
 
 		//Run Compute Shader.
 		colourCalculator.Dispatch(0, size / 8, size / 8, 1);
-		Color[] colours = new Color[size * size];
-		colourBuffer.GetData(colours);
+		this.colours = new Color[size * size];
+		colourBuffer.GetData(this.colours);
 
 		//Dispose of shared memory.
 		heightBuffer.Dispose();
@@ -67,11 +69,12 @@ public class ColourMap : MonoBehaviour
 		biomeHeightBuffer.Dispose();
 		biomeColourBuffer.Dispose();
 
-		return colours;
+		return this.colours;
     }
 
     public void TextureFromColourMap(Color[] colourMap, int width, int height) 
 	{
+		this.colours = colourMap;
 		Texture2D texture = new Texture2D (width, height);
 		texture.filterMode = FilterMode.Bilinear; //Makes texture looks less blocky.
 		texture.wrapMode = TextureWrapMode.Clamp;
@@ -82,6 +85,8 @@ public class ColourMap : MonoBehaviour
         meshRenderer.material.SetTexture("_mainTexture", texture);
 		meshRenderer.material.SetFloat("_blurRadius", 1f / (float)(height));
 	}
+
+	public Color[] getColours() {return this.colours; }
 }
 
 [System.Serializable]

@@ -4,10 +4,21 @@ using UnityEngine;
 
 public class mouseInput : MonoBehaviour
 {
+    [SerializeField]
+    ChunkSystem chunkSystem;
+
     Brush brush;
+    int radius;
+    int power;
+    Color colour;
+    public bool isCircle;
 
     void Start() {
-        brush = GetComponent<Brush>();
+        brush = new BrushColour();
+        radius = 10;
+        power = 10;
+        isCircle = true;
+        colour = Color.magenta;
     }
 
     // Update is called once per frame
@@ -21,8 +32,7 @@ public class mouseInput : MonoBehaviour
                 Vector3 hitPosition = hitData.point;
 
                 //Do something
-                Debug.Log(hitPosition.ToString());
-                brush.Apply(hitData);
+                brush.Apply(chunkSystem, hitData, this.radius, this.power, this.colour, this.isCircle);
             }
         }
     }
