@@ -16,13 +16,15 @@ public class ChunkSystem : MonoBehaviour
     public Vector2Int numChunks;
     [SerializeField]
     GameObject ChunkPrefab;
+    [SerializeField]
+    CameraScript Camera;
 
 
     ProceduralGenerator generator;
     float[,] globalHM;  //Global heightmap, don't lose this!
+    Color[,] globalColours; //Global colour map.
+
     TerrainBuilder[,] chunks; //Contains references to every chunk.
-    [SerializeField]
-    CameraScript camera;
 
     void Start()
     {
@@ -55,6 +57,8 @@ public class ChunkSystem : MonoBehaviour
 
         //Initialise heightmap with procedural terrain.
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
+        //Colour in the heightmap.
+        globalColours = generator.AddColour(globalHM);
 
         //Give terrain chunks the correct section of the heightmap to render.
         for(int x = 0; x < numChunks.x; x++)
@@ -66,13 +70,13 @@ public class ChunkSystem : MonoBehaviour
                 chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
                 
                 //Add procedural colours.
-                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize);
-                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
+                start += new Vector2Int(x, z);
+                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(globalColours, start, ChunkSize);
             }
         }
 
         //Set camera zoom
-        camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
+        Camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
 
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }

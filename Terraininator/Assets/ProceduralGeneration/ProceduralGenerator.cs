@@ -1,10 +1,11 @@
 using UnityEngine;
 
 /*
-    This class handles the procedural generation of the terrain heights.
-    HeightMap() is the only function intended to be called from the outside:
+    This class handles the procedural generation of the terrain heights and colours.
+    HeightMap() and AddColour() are intended to be called from the outside.
         LayeredNoise() only helps HeightMap().
     The HeightMap() function returns a float[,] of heights.
+    The AddColours() function returns a Color[,] to colour in a heightmap.
 */
 public class ProceduralGenerator : MonoBehaviour
 {
@@ -53,6 +54,15 @@ public class ProceduralGenerator : MonoBehaviour
     public float WarpStrength = 0;
     
     public Vector2 WarpSeed = Vector2.zero;
+
+    [Header("Colours")]
+    [SerializeField]
+    TerrainType[] Biomes;
+    [SerializeField]
+    float SlopeThreshold;
+
+    [SerializeField]
+    ComputeShader ColourCalculator;
 
 
     public float[,] HeightMap(int xSize, int zSize)
@@ -128,5 +138,95 @@ public class ProceduralGenerator : MonoBehaviour
         }
 
         return height;
+    }
+
+    public Color[,] AddColour(float[,] heightMap)
+	{
+		int xSize = heightMap.GetLength(0);
+		int zSize = heightMap.GetLength(1);
+
+		//Create shared memory with GPU.
+		ComputeBuffer heightBuffer = new ComputeBuffer(xSize * zSize, sizeof(float));
+		ComputeBuffer biomeHeightBuffer = new ComputeBuffer(Biomes.Length, sizeof(float));
+		ComputeBuffer biomeColourBuffer = new ComputeBuffer(Biomes.Length, 4 * sizeof(float));
+        ComputeBuffer biomeSlopeColourBuffer = new ComputeBuffer(Biomes.Length, 4 * sizeof(float));
+		ComputeBuffer colourBuffer = new ComputeBuffer(xSize * zSize, 4 * sizeof(float));
+
+		//Turn everything into arrays of floats, since the GPU doesn't know what TerrainTypes or float[,] are.
+		float[] biomeHeights = new float[Biomes.Length];
+		Color[] biomeColours = new Color[Biomes.Length];
+        Color[] biomeSlopeColours = new Color[Biomes.Length];
+		for (int i = 0; i < Biomes.Length; i++)
+		{
+			biomeHeights[i] = Biomes[i].height;
+			biomeColours[i] = Biomes[i].flatColour;
+            biomeSlopeColours[i] = Biomes[i].slopeyColour;
+		}
+		float[] localHM = new float[xSize * zSize];
+		for (int x = 0; x < xSize; x++)
+		{
+			for (int z = 0; z < zSize; z++)
+				localHM[z * xSize + x] = heightMap[x, z];
+		}
+
+		//Give GPU data through shared memory.
+		heightBuffer.SetData(localHM);
+		biomeHeightBuffer.SetData(biomeHeights);
+		biomeColourBuffer.SetData(biomeColours);
+        biomeSlopeColourBuffer.SetData(biomeSlopeColours);
+
+		ColourCalculator.SetBuffer(0, "heightmap", heightBuffer);
+		ColourCalculator.SetBuffer(0, "colours", colourBuffer);
+		ColourCalculator.SetBuffer(0, "biomeHeights", biomeHeightBuffer);
+		ColourCalculator.SetBuffer(0, "biomeFlatColours", biomeColourBuffer);
+        ColourCalculator.SetBuffer(0, "biomeSlopeColours", biomeSlopeColourBuffer);
+        
+        ColourCalculator.SetFloat("slopeThreshold", SlopeThreshold);
+		ColourCalculator.SetInt("xSize", xSize);
+		ColourCalculator.SetInt("zSize", zSize);
+		ColourCalculator.SetInt("numBiomes", Biomes.Length);
+
+		//Run Compute Shader.
+		ColourCalculator.Dispatch(0, xSize / 8, zSize / 8, 1);
+		Color[] flatColours = new Color[xSize * zSize];
+		colourBuffer.GetData(flatColours);
+
+		//Dispose of shared memory.
+		heightBuffer.Dispose();
+		colourBuffer.Dispose();
+		biomeHeightBuffer.Dispose();
+		biomeColourBuffer.Dispose();
+        biomeSlopeColourBuffer.Dispose();
+
+		//Convert array given by compute shader into 2D map (ComputeShaders don't use 2D arrays for some reason)
+		Color[,] Colours2D = new Color[xSize, zSize];
+		for (int x = 0; x < xSize; x++)
+		{
+			for (int z = 0; z < zSize; z++)
+				Colours2D[x, z] = flatColours[z * xSize + x];
+		}
+		return Colours2D;
+    }
+}
+
+[System.Serializable]
+public struct TerrainType
+{
+	public string name;
+
+    //Maximum height threshold.
+    //The heighest terrain needs to have a very high maximum height, 
+    //else the shader will default to a black colour for terrain higher than the highest terraintype.
+	public float height;
+    public Color flatColour;
+    public Color slopeyColour;
+
+    
+    public TerrainType(string name2, float height2, Color flat, Color slopey) 
+	{
+		name = name2;
+        height = height2;
+        flatColour = flat;
+        slopeyColour = slopey;
     }
 }

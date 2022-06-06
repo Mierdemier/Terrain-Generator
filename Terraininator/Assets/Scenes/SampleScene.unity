@@ -7043,10 +7043,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChunkSize: 248
-  numChunks: {x: 6, y: 6}
+  numChunks: {x: 3, y: 3}
   ChunkPrefab: {fileID: 6813269490486257897, guid: 1099475a01e8ecd4d8be4c5dd0f0b454,
     type: 3}
-  camera: {fileID: 1724719660}
+  Camera: {fileID: 1724719660}
 --- !u!114 &778203016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7094,6 +7094,29 @@ MonoBehaviour:
   BiomeInfluence: 0.8
   WarpStrength: 0
   WarpSeed: {x: 0, y: 0}
+  Biomes:
+  - name: Beach
+    height: 1.5
+    flatColour: {r: 0.8584906, g: 0.8584906, b: 0.6128219, a: 0}
+    slopeyColour: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 0}
+  - name: Meadow
+    height: 7.5
+    flatColour: {r: 0.19698584, g: 0.754717, b: 0.32231864, a: 0}
+    slopeyColour: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 0}
+  - name: Hill
+    height: 15
+    flatColour: {r: 0.11154618, g: 0.4433962, b: 0.18632926, a: 0}
+    slopeyColour: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 0}
+  - name: Mountain
+    height: 35
+    flatColour: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 0}
+    slopeyColour: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 0}
+  - name: Mountain top
+    height: 70
+    flatColour: {r: 0.8425299, g: 0.93746287, b: 0.9433962, a: 0}
+    slopeyColour: {r: 0.59607846, g: 0.59607846, b: 0.59607846, a: 0}
+  SlopeThreshold: 5
+  ColourCalculator: {fileID: 7200000, guid: 0baed4bef9b14c0469d6a685c9e54643, type: 3}
 --- !u!4 &778203017
 Transform:
   m_ObjectHideFlags: 0
