@@ -9,6 +9,10 @@ public class UIGraphicsPanel : MonoBehaviour
     [SerializeField]
     Material OceanMat;
     [Space]
+    [SerializeField]
+    ProceduralGenerator generator;
+    [SerializeField]
+    ChunkSystem chunksystem;
     
     [SerializeField]
     Light Sun;
@@ -24,6 +28,12 @@ public class UIGraphicsPanel : MonoBehaviour
 
     [SerializeField]
     UISkySelector SkySelector;
+    [Space]
+
+    [SerializeField]
+    Slider SlopeSlider;
+    [SerializeField]
+    Slider[] HeightSliders;
 
     void Start()
     {
@@ -45,6 +55,30 @@ public class UIGraphicsPanel : MonoBehaviour
     public void SetWaterColour(Color colour, string colourVariable)
     {
         OceanMat.SetColor(colourVariable, colour);
+    }
+
+    public void SetTerrainColour(Color colour, int colourIndex)
+    {
+        int numColours = generator.TerrainTypes.Length;
+        //High indices are for slope colours.
+        if (colourIndex >= numColours)
+            generator.TerrainTypes[colourIndex - numColours].slopeyColour = colour;
+        else
+            generator.TerrainTypes[colourIndex].flatColour = colour;
+
+        chunksystem.GenerateTextures();
+    }
+    public void SetTerrainColourHeight(int index)
+    {
+        generator.TerrainTypes[index].height = HeightSliders[index].value;
+
+        chunksystem.GenerateTextures();
+    }
+    public void SetTerrainColourSlope()
+    {
+        generator.SlopeThreshold = SlopeSlider.value;
+
+        chunksystem.GenerateTextures();
     }
 
     public void SetSky()

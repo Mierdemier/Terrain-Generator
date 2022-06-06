@@ -8,9 +8,9 @@ RWStructuredBuffer<float4> biomeFlatColours;
 RWStructuredBuffer<float4> biomeSlopeColours;
 
 float slopeThreshold;
-int xSize;
-int zSize;
-int numBiomes;
+uint xSize;
+uint zSize;
+uint numBiomes;
 
 //The ColourCalculator is a ComputeShader (that means it runs on the GPU).
 //It is used for quickly calculating procedural colour values for every point on the heightmap in parallel.
@@ -25,10 +25,10 @@ float Abs(float x)
 }
 
 //Returns true if the point with index i is at the edge of the heightmap (doesn't have 8 neighbours)
-bool OnEdge(int i)
+bool OnEdge(uint i)
 {
-    int xLayer = i % xSize;
-    int zLayer = i / xSize;
+    uint xLayer = i % xSize;
+    uint zLayer = i / xSize;
 
     return (zLayer == zSize - 1 || zLayer == 0 || xLayer == xSize - 1 || xLayer == 0);
 }
@@ -36,7 +36,7 @@ bool OnEdge(int i)
 //This function returns the 'slope' of a bit of terrain.
 //Note that this is not the same as the definition of a slope in calculus.
 //It's not even a vector, just a number giving an indication of the 'jaggedness' of the terrain.
-float SlopeFunction (int i)
+float SlopeFunction (uint i)
 { 
     if (OnEdge(i))
         return 0;
@@ -58,9 +58,9 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int pos = id.y * xSize + id.x;
     float currentHeight = heightmap[pos];
     
-    for (int i = 0; i < numBiomes; i++)
+    for (uint i = 0; i < numBiomes; i++)
     {
-        if (currentHeight <= biomeHeights[i])
+        if (currentHeight <= biomeHeights[i] || i == numBiomes - 1)
         {
             //Find slope of terrain.
             float currentSlope = SlopeFunction(pos);

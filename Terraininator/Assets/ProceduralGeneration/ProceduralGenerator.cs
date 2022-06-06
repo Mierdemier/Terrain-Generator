@@ -56,10 +56,8 @@ public class ProceduralGenerator : MonoBehaviour
     public Vector2 WarpSeed = Vector2.zero;
 
     [Header("Colours")]
-    [SerializeField]
-    TerrainType[] Biomes;
-    [SerializeField]
-    float SlopeThreshold;
+    public TerrainType[] TerrainTypes;
+    public float SlopeThreshold;
 
     [SerializeField]
     ComputeShader ColourCalculator;
@@ -147,20 +145,20 @@ public class ProceduralGenerator : MonoBehaviour
 
 		//Create shared memory with GPU.
 		ComputeBuffer heightBuffer = new ComputeBuffer(xSize * zSize, sizeof(float));
-		ComputeBuffer biomeHeightBuffer = new ComputeBuffer(Biomes.Length, sizeof(float));
-		ComputeBuffer biomeColourBuffer = new ComputeBuffer(Biomes.Length, 4 * sizeof(float));
-        ComputeBuffer biomeSlopeColourBuffer = new ComputeBuffer(Biomes.Length, 4 * sizeof(float));
+		ComputeBuffer biomeHeightBuffer = new ComputeBuffer(TerrainTypes.Length, sizeof(float));
+		ComputeBuffer biomeColourBuffer = new ComputeBuffer(TerrainTypes.Length, 4 * sizeof(float));
+        ComputeBuffer biomeSlopeColourBuffer = new ComputeBuffer(TerrainTypes.Length, 4 * sizeof(float));
 		ComputeBuffer colourBuffer = new ComputeBuffer(xSize * zSize, 4 * sizeof(float));
 
 		//Turn everything into arrays of floats, since the GPU doesn't know what TerrainTypes or float[,] are.
-		float[] biomeHeights = new float[Biomes.Length];
-		Color[] biomeColours = new Color[Biomes.Length];
-        Color[] biomeSlopeColours = new Color[Biomes.Length];
-		for (int i = 0; i < Biomes.Length; i++)
+		float[] biomeHeights = new float[TerrainTypes.Length];
+		Color[] biomeColours = new Color[TerrainTypes.Length];
+        Color[] biomeSlopeColours = new Color[TerrainTypes.Length];
+		for (int i = 0; i < TerrainTypes.Length; i++)
 		{
-			biomeHeights[i] = Biomes[i].height;
-			biomeColours[i] = Biomes[i].flatColour;
-            biomeSlopeColours[i] = Biomes[i].slopeyColour;
+			biomeHeights[i] = TerrainTypes[i].height;
+			biomeColours[i] = TerrainTypes[i].flatColour;
+            biomeSlopeColours[i] = TerrainTypes[i].slopeyColour;
 		}
 		float[] localHM = new float[xSize * zSize];
 		for (int x = 0; x < xSize; x++)
@@ -184,7 +182,7 @@ public class ProceduralGenerator : MonoBehaviour
         ColourCalculator.SetFloat("slopeThreshold", SlopeThreshold);
 		ColourCalculator.SetInt("xSize", xSize);
 		ColourCalculator.SetInt("zSize", zSize);
-		ColourCalculator.SetInt("numBiomes", Biomes.Length);
+		ColourCalculator.SetInt("numBiomes", TerrainTypes.Length);
 
 		//Run Compute Shader.
 		ColourCalculator.Dispatch(0, xSize / 8, zSize / 8, 1);

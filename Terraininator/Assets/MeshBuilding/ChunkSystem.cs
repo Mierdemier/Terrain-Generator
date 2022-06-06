@@ -48,17 +48,14 @@ public class ChunkSystem : MonoBehaviour
         }
 
         //Render the heightmap using the chunks you made.
-        GenerateFromScratch();
+        GenerateMeshes();
+        GenerateTextures();
     }
 
-    public void GenerateFromScratch()
+    public void GenerateMeshes()
     {
-        DateTime time = DateTime.Now;
-
         //Initialise heightmap with procedural terrain.
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
-        //Colour in the heightmap.
-        globalColours = generator.AddColour(globalHM);
 
         //Give terrain chunks the correct section of the heightmap to render.
         for(int x = 0; x < numChunks.x; x++)
@@ -68,17 +65,28 @@ public class ChunkSystem : MonoBehaviour
                 //Build a mesh for the chunk.
                 Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
                 chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
-                
-                //Add procedural colours.
-                start += new Vector2Int(x, z);
-                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(globalColours, start, ChunkSize);
             }
         }
 
         //Set camera zoom
         Camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
+    }
 
-        Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
+    public void GenerateTextures()
+    {
+        //Create new colour map based on heights.
+        globalColours = generator.AddColour(globalHM);
+
+        //Give terrain chunks each a section of the colours to render.
+        for(int x = 0; x < numChunks.x; x++)
+        {
+            for (int z = 0; z < numChunks.y; z++)
+            {
+                //Build a mesh for the chunk.
+                Vector2Int start = new Vector2Int(x * ChunkSize , z * ChunkSize);
+                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(globalColours, start, ChunkSize);
+            }
+        }
     }
 
     void OnValidate()
