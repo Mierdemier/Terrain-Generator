@@ -23,6 +23,7 @@ public class UIColourPicker : MonoBehaviour
     Image display;
     Color previousColour;
     string currentlyEditing;
+    int IBasedCurrentlyEditing;
 
     void Update()
     {
@@ -42,6 +43,10 @@ public class UIColourPicker : MonoBehaviour
     {
         currentlyEditing = toEdit;
     }
+    public void SetEditing(int toEdit)
+    {
+        IBasedCurrentlyEditing = toEdit;
+    }
 
 
 
@@ -57,6 +62,11 @@ public class UIColourPicker : MonoBehaviour
     public void SetWaterColour()
     {
         panel.SetWaterColour(Selector.color, currentlyEditing);
+        Selector.gameObject.SetActive(false);
+    }
+    public void SetTerrainColour()
+    {
+        panel.SetTerrainColour(Selector.color, IBasedCurrentlyEditing);
         Selector.gameObject.SetActive(false);
     }
 }

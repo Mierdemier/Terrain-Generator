@@ -16,13 +16,15 @@ public class ChunkSystem : MonoBehaviour
     public Vector2Int numChunks;
     [SerializeField]
     GameObject ChunkPrefab;
+    [SerializeField]
+    CameraScript Camera;
 
 
     ProceduralGenerator generator;
     float[,] globalHM;  //Global heightmap, don't lose this!
+    Color[,] globalColours; //Global colour map.
+
     TerrainBuilder[,] chunks; //Contains references to every chunk.
-    [SerializeField]
-    CameraScript camera;
 
     void Start()
     {
@@ -46,13 +48,12 @@ public class ChunkSystem : MonoBehaviour
         }
 
         //Render the heightmap using the chunks you made.
-        GenerateFromScratch();
+        GenerateMeshes();
+        GenerateTextures();
     }
 
-    public void GenerateFromScratch()
+    public void GenerateMeshes()
     {
-        DateTime time = DateTime.Now;
-
         //Initialise heightmap with procedural terrain.
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
@@ -64,17 +65,28 @@ public class ChunkSystem : MonoBehaviour
                 //Build a mesh for the chunk.
                 Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
                 chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
-                
-                //Add procedural colours.
-                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize);
-                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
             }
         }
 
         //Set camera zoom
-        camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
+        Camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
+    }
 
-        Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
+    public void GenerateTextures()
+    {
+        //Create new colour map based on heights.
+        globalColours = generator.AddColour(globalHM);
+
+        //Give terrain chunks each a section of the colours to render.
+        for(int x = 0; x < numChunks.x; x++)
+        {
+            for (int z = 0; z < numChunks.y; z++)
+            {
+                //Build a mesh for the chunk.
+                Vector2Int start = new Vector2Int(x * ChunkSize , z * ChunkSize);
+                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(globalColours, start, ChunkSize);
+            }
+        }
     }
 
     void OnValidate()

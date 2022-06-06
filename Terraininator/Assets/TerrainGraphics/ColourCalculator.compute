@@ -1,25 +1,76 @@
 #pragma kernel CSMain
 
 RWStructuredBuffer<float> heightmap;
-RWStructuredBuffer<float> biomeHeights;
-RWStructuredBuffer<float4> biomeColours;
 RWStructuredBuffer<float4> colours;
-int size;
-int numBiomes;
+
+RWStructuredBuffer<float> biomeHeights;
+RWStructuredBuffer<float4> biomeFlatColours;
+RWStructuredBuffer<float4> biomeSlopeColours;
+
+float slopeThreshold;
+uint xSize;
+uint zSize;
+uint numBiomes;
 
 //The ColourCalculator is a ComputeShader (that means it runs on the GPU).
 //It is used for quickly calculating procedural colour values for every point on the heightmap in parallel.
+
+/******************************** Utility Functions ***********************************/
+//Returns the absolute value of x.
+float Abs(float x)
+{
+    if (x < 0)
+        return -x;
+    return x;
+}
+
+//Returns true if the point with index i is at the edge of the heightmap (doesn't have 8 neighbours)
+bool OnEdge(uint i)
+{
+    uint xLayer = i % xSize;
+    uint zLayer = i / xSize;
+
+    return (zLayer == zSize - 1 || zLayer == 0 || xLayer == xSize - 1 || xLayer == 0);
+}
+
+//This function returns the 'slope' of a bit of terrain.
+//Note that this is not the same as the definition of a slope in calculus.
+//It's not even a vector, just a number giving an indication of the 'jaggedness' of the terrain.
+float SlopeFunction (uint i)
+{ 
+    if (OnEdge(i))
+        return 0;
+
+             //left                                   //right
+    return Abs(heightmap[i] - heightmap[i - 1]) + Abs(heightmap[i] - heightmap[i + 1])
+      //up                                       //down
+    + Abs(heightmap[i] - heightmap[i + xSize]) + Abs(heightmap[i] - heightmap[i - xSize])
+    //diagonal up-left                               //diagonal up-right
+    + Abs(heightmap[i] - heightmap[i + xSize - 1]) + Abs(heightmap[i] - heightmap[i + xSize + 1])
+    //diagonal down-left                            //diagonal down-right
+    + Abs(heightmap[i] - heightmap[i - xSize - 1]) + Abs(heightmap[i] - heightmap[i - xSize + 1])
+    / 8;
+}
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    float currentHeight = heightmap[id.y * size + id.x];
+    int pos = id.y * xSize + id.x;
+    float currentHeight = heightmap[pos];
     
-    for (int i = 0; i < numBiomes; i++)
+    for (uint i = 0; i < numBiomes; i++)
     {
-        if (currentHeight <= biomeHeights[i] * 50)
+        if (currentHeight <= biomeHeights[i] || i == numBiomes - 1)
         {
-            colours[id.y * size + id.x] = biomeColours[i];
+            //Find slope of terrain.
+            float currentSlope = SlopeFunction(pos);
+
+            //Pick correct colour based on slope threshold.
+            if (currentSlope < slopeThreshold)
+                colours[pos] = biomeFlatColours[i];
+            else
+                colours[pos] = biomeSlopeColours[i];
             break;
         }
-    }
+    } 
 }
