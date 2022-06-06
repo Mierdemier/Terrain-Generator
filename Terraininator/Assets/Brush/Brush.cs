@@ -20,15 +20,23 @@ public class BrushTerrain : Brush
         int xSize = map.GetLength(0);
         int ySize = map.GetLength(1);
 
+        //Needed to make certain all affected chunks are updated.
+        Vector2Int chunkIndexes = chunkSystem.FindChunkIndexes(new Vector2Int(xCoor, yCoor));
+        if(!chunkSystem.IsValidChunkIndex(chunkIndexes)) { return; }//If this isn't a valid chunk, just end the function here.
+        int size = chunkSystem.ChunkSize;
+        bool multipleChunks = false; //Are several chunks affected?
+
         //Edit terrain in heightmap.
         int threshold = radius * radius;
         int xSquared = 1;
         int ySquared = 1;
         for(int x = xCoor-radius; x <= xCoor+radius; x++) {
             if(x>=0 && x<xSize) { //Don't go out-of-bounds.
+                if(x<chunkIndexes.x*size || x>=chunkIndexes.x*size+size) { multipleChunks = true; } //More than one chunk is affected.
                 xSquared = (x - xCoor) * (x - xCoor);
                 for(int y = yCoor-radius; y <= yCoor+radius; y++) {
                     if(y>=0 && y<ySize) { //Don't go out-of-bounds.
+                        if(y<chunkIndexes.y*size || y>=chunkIndexes.y*size+size) { multipleChunks = true; } //More than one chunk is affected.
                         if(!isCircle) { //Draw square
                             map[x,y] += power;
                         } else { //Draw circle
@@ -41,17 +49,20 @@ public class BrushTerrain : Brush
                 }
             }
         }
+        chunkSystem.setHeightMap(map);
 
         //Generate updated terrain.
-        chunkSystem.setHeightMap(map);
-        Vector2Int chunkIndexes = chunkSystem.FindChunkIndexes(new Vector2Int(xCoor, yCoor));
-        for(int i = chunkIndexes.x -1; i <= chunkIndexes.x +1; i++) { //Update all chunks around clicked chunk (they may also be affected).
-            for(int j = chunkIndexes.y -1; j <= chunkIndexes.y +1; j++) {
-                Vector2Int currChunkIndexes = new Vector2Int(i, j);
-                if(chunkSystem.IsValidChunkIndex(currChunkIndexes)) { //Check it isn't out-of-bounds.
-                    chunkSystem.GenerateChunkMesh(currChunkIndexes);
+        if(multipleChunks) { //Update several chunks.
+            for(int i = chunkIndexes.x -1; i <= chunkIndexes.x +1; i++) { //Update all chunks around clicked chunk (they may also be affected).
+                for(int j = chunkIndexes.y -1; j <= chunkIndexes.y +1; j++) {
+                    Vector2Int currChunkIndexes = new Vector2Int(i, j);
+                    if(chunkSystem.IsValidChunkIndex(currChunkIndexes)) { //Check it isn't out-of-bounds.
+                        chunkSystem.GenerateChunkMesh(currChunkIndexes);
+                    }
                 }
             }
+        } else { //Update only one chunk.
+            chunkSystem.GenerateChunkMesh(chunkIndexes);
         }
     }
 }
