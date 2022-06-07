@@ -25,6 +25,8 @@ public class ChunkSystem : MonoBehaviour
     Color[,] globalColours; //Global colour map.
 
     TerrainBuilder[,] chunks; //Contains references to every chunk.
+    [SerializeField]
+    CameraScript cameraScript;
 
     void Start()
     {
@@ -66,8 +68,7 @@ public class ChunkSystem : MonoBehaviour
         }
 
         //Set camera zoom
-        Camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
-    }
+        cameraScript.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
 
     public void GenerateTextures()
     {
