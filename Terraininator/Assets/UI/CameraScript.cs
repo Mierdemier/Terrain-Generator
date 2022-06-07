@@ -1,9 +1,9 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraScript : MonoBehaviour
 {
-    GameObject generatorObj;
-    ProceduralGenerator procGenScript;
+    [SerializeField]
     ChunkSystem chunkSysScript;
 
     Transform swivel, stick;
@@ -23,16 +23,10 @@ public class CameraScript : MonoBehaviour
         swivel = transform.GetChild(0);
         stick = swivel.GetChild(0);
     }
-    
-    void Start() {
-        generatorObj = GameObject.Find("GeneratorObject");
-        procGenScript = generatorObj.GetComponent<ProceduralGenerator>();
-        chunkSysScript = generatorObj.GetComponent<ChunkSystem>();
-    }
 
     void Update() {
         float zoomDelta = Input.GetAxis("Mouse ScrollWheel");
-        if(zoomDelta != 0f) {
+        if(zoomDelta != 0f && !EventSystem.current.IsPointerOverGameObject()) {
             AdjustZoom(zoomDelta);
         }
 

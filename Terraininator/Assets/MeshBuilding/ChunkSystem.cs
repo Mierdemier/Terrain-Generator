@@ -22,7 +22,7 @@ public class ChunkSystem : MonoBehaviour
     float[,] globalHM;  //Global heightmap, don't lose this!
     TerrainBuilder[,] chunks; //Contains references to every chunk.
     [SerializeField]
-    CameraScript camera;
+    CameraScript cameraScript;
 
     void Start()
     {
@@ -72,8 +72,7 @@ public class ChunkSystem : MonoBehaviour
         }
 
         //Set camera zoom
-        Debug.Log("Scale:" + generator.Scale);
-        camera.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
+        cameraScript.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
 
         Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
     }
