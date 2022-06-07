@@ -68,6 +68,7 @@ public class BrushTerrain : Brush
 }
 
 
+/*
 public class BrushColour : Brush
 {
     //NOTE: In the version I'm working on now it only updates one chunk!
@@ -117,6 +118,7 @@ public class BrushColour : Brush
         chunk.GetComponent<ColourMap>().TextureFromColourMap(colourMap, size, size);
     }
 }
+*/
 
 public class BrushFlatten : Brush
 {
