@@ -69,7 +69,8 @@ public class ChunkSystem : MonoBehaviour
 
         //Set camera zoom
         cameraScript.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
-
+    }
+    
     public void GenerateTextures()
     {
         //Create new colour map based on heights.
