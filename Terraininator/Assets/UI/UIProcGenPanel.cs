@@ -67,8 +67,7 @@ public class UIProcGenPanel : MonoBehaviour
     {
         SetValues();
 
-        chunksystem.GenerateMeshes();
-        chunksystem.GenerateTextures();
+        chunksystem.GenerateFromScratch();
     }
 
     void SetValues()

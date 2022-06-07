@@ -48,14 +48,11 @@ public class ChunkSystem : MonoBehaviour
         }
 
         //Render the heightmap using the chunks you made.
-        GenerateMeshes();
-        GenerateTextures();
+        GenerateFromScratch();
     }
 
     public void GenerateMeshes()
     {
-        //Initialise heightmap with procedural terrain.
-        globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
         //Give terrain chunks the correct section of the heightmap to render.
         for(int x = 0; x < numChunks.x; x++)
@@ -87,6 +84,29 @@ public class ChunkSystem : MonoBehaviour
                 chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(globalColours, start, ChunkSize);
             }
         }
+    }
+
+    public void GenerateFromScratch()
+    {
+        globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
+
+        GenerateMeshes();
+        GenerateTextures();
+    }
+
+    public void GenerateFromMap(Texture2D map)
+    {
+       int xSize = globalHM.GetLength(0);
+       int zSize = globalHM.GetLength(1);
+
+        for (int x = 0; x < xSize; x++)
+        {
+            for (int z = 0; z < zSize; z++)
+                globalHM[x,z] = map.GetPixel((x * map.width) / xSize, (z * map.height) / zSize).grayscale * 50;
+        }
+
+        GenerateMeshes();
+        GenerateTextures();
     }
 
     void OnValidate()
