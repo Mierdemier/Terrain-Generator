@@ -29,10 +29,10 @@ public class ChunkSystem : MonoBehaviour
     void Start()
     {
         //Find generator.
-        generator = GetComponent<ProceduralGenerator>();
+        this.generator = GetComponent<ProceduralGenerator>();
 
         //Spawn terrain chunks
-        chunks = new TerrainBuilder[numChunks.x , numChunks.y];
+        this.chunks = new TerrainBuilder[numChunks.x , numChunks.y];
         for(int x = 0; x < numChunks.x; x++)
         {
             for (int z = 0; z < numChunks.y; z++)
@@ -109,15 +109,41 @@ public class ChunkSystem : MonoBehaviour
         GenerateTextures();
     }
 
+    //Build a mesh for a chunk.
+    public void GenerateChunkMesh(Vector2Int chunkIndexes) {
+        int x = chunkIndexes.x;
+        int z = chunkIndexes.y;
+
+        Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
+        chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
+    }
+
     void OnValidate()
     {
         //Enforce ChunkSize being a multiple of 8.
         ChunkSize -= ChunkSize % 8;
     }
 
-    //TODO
     //Functions that will help with altering parts of the heightmap (say, using a brush):
+    public float[,] getHeightMap() {return this.globalHM;}
 
+    public void setHeightMap(float[,] heightMap) {this.globalHM = heightMap;}
+
+    //Returns x and z indexes of a chunk given coordinates.
+    public Vector2Int FindChunkIndexes(Vector2Int coors){
+        return new Vector2Int(coors.x/ChunkSize, coors.y/ChunkSize);
+    }
+
+    //Returns chunk given indexes.
+    public TerrainBuilder FindChunk(Vector2Int indexes){
+        return chunks[indexes.x, indexes.y];
+    }
+
+    public bool IsValidChunkIndex(Vector2Int indexes){
+        return (indexes.x >= 0 && indexes.x < numChunks.x) && (indexes.y >= 0 && indexes.y < numChunks.y);
+    }
+
+    //TODO
     //FindChunks(), a function that returns the chunks in a certain area,
 
     //AlterHM(), a function that changes the globalHM and updates the chunks in the right area.
