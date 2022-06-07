@@ -16,10 +16,14 @@ public class ChunkSystem : MonoBehaviour
     public Vector2Int numChunks;
     [SerializeField]
     GameObject ChunkPrefab;
+    [SerializeField]
+    CameraScript Camera;
 
 
     ProceduralGenerator generator;
     float[,] globalHM;  //Global heightmap, don't lose this!
+    Color[,] globalColours; //Global colour map.
+
     TerrainBuilder[,] chunks; //Contains references to every chunk.
     [SerializeField]
     CameraScript cameraScript;
@@ -27,10 +31,10 @@ public class ChunkSystem : MonoBehaviour
     void Start()
     {
         //Find generator.
-        generator = GetComponent<ProceduralGenerator>();
+        this.generator = GetComponent<ProceduralGenerator>();
 
         //Spawn terrain chunks
-        chunks = new TerrainBuilder[numChunks.x , numChunks.y];
+        this.chunks = new TerrainBuilder[numChunks.x , numChunks.y];
         for(int x = 0; x < numChunks.x; x++)
         {
             for (int z = 0; z < numChunks.y; z++)
@@ -49,12 +53,8 @@ public class ChunkSystem : MonoBehaviour
         GenerateFromScratch();
     }
 
-    public void GenerateFromScratch()
+    public void GenerateMeshes()
     {
-        DateTime time = DateTime.Now;
-
-        //Initialise heightmap with procedural terrain.
-        globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
 
         //Give terrain chunks the correct section of the heightmap to render.
         for(int x = 0; x < numChunks.x; x++)
@@ -64,17 +64,59 @@ public class ChunkSystem : MonoBehaviour
                 //Build a mesh for the chunk.
                 Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
                 chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
-                
-                //Add procedural colours.
-                Color[] colours = chunks[x,z].GetComponent<ColourMap>().AddColour(globalHM, start, ChunkSize);
-                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(colours, ChunkSize, ChunkSize);
             }
         }
 
         //Set camera zoom
         cameraScript.setZoom(numChunks.x * (-100f), generator.Scale * (-1.5f));
 
-        Debug.Log("Completed in: " + (time - DateTime.Now).ToString());
+    public void GenerateTextures()
+    {
+        //Create new colour map based on heights.
+        globalColours = generator.AddColour(globalHM);
+
+        //Give terrain chunks each a section of the colours to render.
+        for(int x = 0; x < numChunks.x; x++)
+        {
+            for (int z = 0; z < numChunks.y; z++)
+            {
+                //Build a mesh for the chunk.
+                Vector2Int start = new Vector2Int(x * ChunkSize , z * ChunkSize);
+                chunks[x,z].GetComponent<ColourMap>().TextureFromColourMap(globalColours, start, ChunkSize);
+            }
+        }
+    }
+
+    public void GenerateFromScratch()
+    {
+        globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
+
+        GenerateMeshes();
+        GenerateTextures();
+    }
+
+    public void GenerateFromMap(Texture2D map)
+    {
+       int xSize = globalHM.GetLength(0);
+       int zSize = globalHM.GetLength(1);
+
+        for (int x = 0; x < xSize; x++)
+        {
+            for (int z = 0; z < zSize; z++)
+                globalHM[x,z] = map.GetPixel((x * map.width) / xSize, (z * map.height) / zSize).grayscale * 50;
+        }
+
+        GenerateMeshes();
+        GenerateTextures();
+    }
+
+    //Build a mesh for a chunk.
+    public void GenerateChunkMesh(Vector2Int chunkIndexes) {
+        int x = chunkIndexes.x;
+        int z = chunkIndexes.y;
+
+        Vector2Int start = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
+        chunks[x,z].GenerateMesh(globalHM, start, ChunkSize);
     }
 
     void OnValidate()
@@ -83,9 +125,26 @@ public class ChunkSystem : MonoBehaviour
         ChunkSize -= ChunkSize % 8;
     }
 
-    //TODO
     //Functions that will help with altering parts of the heightmap (say, using a brush):
+    public float[,] getHeightMap() {return this.globalHM;}
 
+    public void setHeightMap(float[,] heightMap) {this.globalHM = heightMap;}
+
+    //Returns x and z indexes of a chunk given coordinates.
+    public Vector2Int FindChunkIndexes(Vector2Int coors){
+        return new Vector2Int(coors.x/ChunkSize, coors.y/ChunkSize);
+    }
+
+    //Returns chunk given indexes.
+    public TerrainBuilder FindChunk(Vector2Int indexes){
+        return chunks[indexes.x, indexes.y];
+    }
+
+    public bool IsValidChunkIndex(Vector2Int indexes){
+        return (indexes.x >= 0 && indexes.x < numChunks.x) && (indexes.y >= 0 && indexes.y < numChunks.y);
+    }
+
+    //TODO
     //FindChunks(), a function that returns the chunks in a certain area,
 
     //AlterHM(), a function that changes the globalHM and updates the chunks in the right area.
