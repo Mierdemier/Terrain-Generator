@@ -14,9 +14,9 @@ public class mouseInput : MonoBehaviour
     public bool isCircle;
 
     void Start() {
-        brush = new BrushTerrain();
+        brush = new BrushFlatten();
         radius = 20;
-        power = 10;
+        power = -5;
         isCircle = true;
         colour = Color.magenta;
     }
