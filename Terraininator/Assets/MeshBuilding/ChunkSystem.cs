@@ -24,6 +24,8 @@ public class ChunkSystem : MonoBehaviour
     Color[,] globalColours; //Global colour map.
 
     TerrainBuilder[,] chunks; //Contains references to every chunk.
+    [SerializeField]
+    CameraScript cameraScript;
 
     void Start()
     {
