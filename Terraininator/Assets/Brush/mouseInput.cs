@@ -19,9 +19,8 @@ public class mouseInput : MonoBehaviour
         if (Physics.Raycast(ray, out hitData))
         {
             //Update decal.
-            Decal.position = hitData.point;
-            Decal.rotation = Quaternion.LookRotation(hitData.normal, Vector3.forward);
-            Decal.localScale = new Vector3(selectedBrush.GetRadius() * 2f, selectedBrush.GetRadius() * 2f, 0.1f);
+            Decal.position = hitData.point + Vector3.up;
+            Decal.localScale = new Vector3(selectedBrush.GetRadius() , selectedBrush.GetRadius(), 0.1f);
 
             //Left mouse button is clicked.
             if(Input.GetMouseButton(0))
