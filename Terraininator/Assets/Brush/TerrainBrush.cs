@@ -74,6 +74,7 @@ public class TerrainBrush : Brush
 
     public override void Apply(ChunkSystem chunkSystem, RaycastHit hitData, float timeApplied)
     {
+        Debug.Log(radius);
         Vector3 hitPosition = hitData.point;
         int xCoor = (int)hitPosition.x;
         int zCoor = (int)hitPosition.z;
@@ -101,5 +102,10 @@ public class TerrainBrush : Brush
         }
 
         chunkSystem.AlterHM(alteration, new Vector2Int(xCoor - radius, zCoor - radius));
+    }
+
+    public override void Finish(ChunkSystem chunkSystem, RaycastHit hitData)
+    {
+        chunkSystem.RegenerateCollisions();
     }
 }

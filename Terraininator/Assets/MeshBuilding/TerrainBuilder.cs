@@ -75,8 +75,10 @@ public class TerrainBuilder : MonoBehaviour
         mesh.RecalculateNormals();
         //And tell the mesh filter about the new mesh.
         filter.mesh = mesh;
+    }
 
-        //Update collisions
+    public void UpdateCollisions()
+    {
         collider.sharedMesh = mesh;
     }
 

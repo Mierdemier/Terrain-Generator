@@ -27,4 +27,9 @@ public class FlattenBrush : Brush
 
         chunkSystem.FlattenHM(flatness, new Vector2Int(xCoor - radius, zCoor - radius));
     }
+
+    public override void Finish(ChunkSystem chunkSystem, RaycastHit hitData)
+    {
+        chunkSystem.RegenerateCollisions();
+    }
 }

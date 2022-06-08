@@ -24,16 +24,19 @@ public class ChunkSystem : MonoBehaviour
     Color[,] globalColours; //Global colour map.
 
     TerrainBuilder[,] chunks; //Contains references to every chunk.
+    bool[,] chunkCollisionDirty; //Stores whether the chunk needs to get new collider.
     [SerializeField]
     CameraScript cameraScript;
 
     void Start()
     {
         //Find generator.
-        this.generator = GetComponent<ProceduralGenerator>();
+        generator = GetComponent<ProceduralGenerator>();
 
         //Spawn terrain chunks
-        this.chunks = new TerrainBuilder[numChunks.x , numChunks.y];
+        chunks = new TerrainBuilder[numChunks.x , numChunks.y];
+        chunkCollisionDirty = new bool[numChunks.x, numChunks.y];
+
         for(int x = 0; x < numChunks.x; x++)
         {
             for (int z = 0; z < numChunks.y; z++)
@@ -67,6 +70,7 @@ public class ChunkSystem : MonoBehaviour
                 //Build a mesh for the chunk.
                 Vector2Int chunkStart = new Vector2Int(x * (ChunkSize - 1), z * (ChunkSize - 1));
                 chunks[x,z].GenerateMesh(globalHM, chunkStart, ChunkSize);
+                chunkCollisionDirty[x,z] = true;
             }
         }
     }
@@ -96,6 +100,7 @@ public class ChunkSystem : MonoBehaviour
         globalColours = generator.AddColour(globalHM);
 
         GenerateMeshes(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
+        RegenerateCollisions();
         GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
 
         //Set camera zoom
@@ -116,6 +121,7 @@ public class ChunkSystem : MonoBehaviour
         }
 
         GenerateMeshes(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
+        RegenerateCollisions();
         GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
     }
 
@@ -155,6 +161,8 @@ public class ChunkSystem : MonoBehaviour
 
         Vector2Int[] afffectedChunks = FindChunkIndices(start, size);
         GenerateMeshes(afffectedChunks[0], afffectedChunks[1]);
+        //Remember to regenerate collisions once you're done altering!
+        //This doesn't happen everytime the heightmap is altered for performance reasons.
     }
 
     public void FlattenHM(float[,] intensity, Vector2Int start)
@@ -192,6 +200,8 @@ public class ChunkSystem : MonoBehaviour
 
         Vector2Int[] afffectedChunks = FindChunkIndices(start, size);
         GenerateMeshes(afffectedChunks[0], afffectedChunks[1]);
+        //Remember to regenerate collisions once you're done altering!
+        //This doesn't happen everytime the heightmap is altered for performance reasons.
     }
 
     public void AlterColours(Color newColour, Vector2Int start, int size)
@@ -206,6 +216,21 @@ public class ChunkSystem : MonoBehaviour
 
         Vector2Int[] affectedChunks = FindChunkIndices(start, size);
         GenerateTextures(affectedChunks[0], affectedChunks[1]);
+    }
+
+    public void RegenerateCollisions()
+    {
+        for (int x = 0; x < numChunks.x; x++)
+        {
+            for (int z = 0; z < numChunks.y; z++)
+            {
+                if (chunkCollisionDirty[x,z])
+                {
+                    chunks[x,z].UpdateCollisions();
+                    chunkCollisionDirty[x,z] = false;
+                }
+            }
+        }
     }
 
     //Takes in a square and tells you two things:

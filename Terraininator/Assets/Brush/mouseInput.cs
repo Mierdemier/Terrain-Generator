@@ -28,6 +28,8 @@ public class mouseInput : MonoBehaviour
                 //Apply brush to affected area.
                 selectedBrush.Apply(chunkSystem, hitData, Time.deltaTime);
             }
+            if (Input.GetMouseButtonUp(0))
+                selectedBrush.Finish(chunkSystem, hitData);
         }
     }
 

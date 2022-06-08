@@ -10,4 +10,10 @@ public class ColourBrush : Brush
 
         chunksystem.AlterColours(colour, new Vector2Int(xCoor - radius, zCoor - radius), 2 * radius + 1);
     }
+
+    public override void Finish(ChunkSystem chunkSystem, RaycastHit hitData)
+    {
+        //Everything is done in apply.
+        return;
+    }
 }
