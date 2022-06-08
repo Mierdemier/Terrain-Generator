@@ -75,12 +75,14 @@ public class ChunkSystem : MonoBehaviour
         }
     }
 
-    public void GenerateTextures(Vector2Int start, Vector2Int end)
+    public void GenerateTextures(Vector2Int start, Vector2Int end, bool overwriteColours = false)
     {
-
         //Precondition
         if (start.x < 0 || start.y < 0 || end.x < start.x || end.y < start.y || end.x > numChunks.x || end.y > numChunks.y)
             Debug.LogError("Can only generate meshes for chunks that exist!");
+
+        if (overwriteColours)
+            globalColours = generator.AddColour(globalHM);
 
         //Give terrain chunks each a section of the colours to render.
         for(int x = 0; x <= end.x; x++)
@@ -97,11 +99,10 @@ public class ChunkSystem : MonoBehaviour
     public void GenerateFromScratch()
     {
         globalHM = generator.HeightMap(ChunkSize * numChunks.x, ChunkSize * numChunks.y);
-        globalColours = generator.AddColour(globalHM);
 
         GenerateMeshes(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
         RegenerateCollisions();
-        GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
+        GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1), true);
 
         //Set camera zoom
         Camera.setZoom(numChunks.x * (-100f), generator.Scale * (-2f));
@@ -109,8 +110,6 @@ public class ChunkSystem : MonoBehaviour
 
     public void GenerateFromMap(Texture2D map)
     {
-
-        globalColours = generator.AddColour(globalHM);
         int xSize = globalHM.GetLength(0);
         int zSize = globalHM.GetLength(1);
 
@@ -122,7 +121,7 @@ public class ChunkSystem : MonoBehaviour
 
         GenerateMeshes(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
         RegenerateCollisions();
-        GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
+        GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1), true);
     }
 
     public void AlterHM(float[,] alteration, Vector2Int start)
