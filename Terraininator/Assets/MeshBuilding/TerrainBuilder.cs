@@ -11,20 +11,19 @@ using UnityEngine;
 */
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof (MeshCollider))]
 public class TerrainBuilder : MonoBehaviour
 {
     [SerializeField]
     MeshFilter filter; //Built-in Unity component that (helps) render the mesh.
+    [SerializeField]
+    MeshCollider collider;
     Vector3[] verts; //Vertices, the points of the model, stored as 3D coordinates.
     int[] tris; //Triangles, stored as collections of 3 array indices of vertices that they connect.
                 //Obviously the length of this array must be a factor of 3, since a triangle has 3 points.
     Vector2[] uvs; //UV-coordinates are used to map textures to a mesh to colour it in.
     Mesh mesh;  //The data of the complete model.
 
-    void Start()
-    {
-        filter = GetComponent<MeshFilter>();
-    }
 
     //Generates a subsection of a heightmap. 
     //(This is more performant than creating a new heightmap from that subsection)
@@ -76,6 +75,9 @@ public class TerrainBuilder : MonoBehaviour
         mesh.RecalculateNormals();
         //And tell the mesh filter about the new mesh.
         filter.mesh = mesh;
+
+        //Update collisions
+        collider.sharedMesh = mesh;
     }
 
     void AddTriangle(int a, int b, int c, ref int t)

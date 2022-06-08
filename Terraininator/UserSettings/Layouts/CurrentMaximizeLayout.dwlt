@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 354
+  controlID: 5360
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -96,23 +96,23 @@ MonoBehaviour:
       serializedVersion: 2
       x: 0
       y: 21
-      width: 1265.3334
-      height: 532.6667
-    m_Scale: {x: 0.7398148, y: 0.7398148}
-    m_Translation: {x: 632.6667, y: 266.33334}
+      width: 694
+      height: 344.66666
+    m_Scale: {x: 0.47870368, y: 0.47870368}
+    m_Translation: {x: 347, y: 172.33333}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -855.169
+      x: -724.8743
       y: -360
-      width: 1710.338
+      width: 1449.7487
       height: 720
     m_MinimalGUI: 1
-  m_defaultScale: 0.7398148
-  m_LastWindowPixelSize: {x: 1898, y: 830.5}
+  m_defaultScale: 0.47870368
+  m_LastWindowPixelSize: {x: 1041, y: 548.5}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 355
+  controlID: 5361
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 356
+  controlID: 5362
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -226,9 +226,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: 44faffff
+      m_SelectedIDs: a86c0000
+      m_LastClickedID: 27816
+      m_ExpandedIDs: 38fbffff186a0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -507,9 +507,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1459.2023, y: 857.53064, z: 0}
+    m_Target: {x: 0.43267706, y: 1.3765798, z: 0}
     speed: 2
-    m_Value: {x: 1459.2023, y: 857.53064, z: 0}
+    m_Value: {x: 0.43267706, y: 1.3765798, z: 0}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -558,11 +558,11 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: 0, y: 0, z: 0, w: 1}
     speed: 2
-    m_Value: {x: -0, y: 0, z: -0, w: -1}
+    m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 260.65616
+    m_Target: 1.1232274
     speed: 2
-    m_Value: 260.65616
+    m_Value: 1.1232274
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1949,22 +1949,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/MeshBuilding
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets
+  - Assets/MeshBuilding
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\ruben\Documents\GitHub\Terrain-Generator\Terraininator
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 79}
-    m_SelectedIDs: da650000
-    m_LastClickedID: 26074
-    m_ExpandedIDs: 00000000da65000000ca9a3bffffff7f
+    m_SelectedIDs: 94740000
+    m_LastClickedID: 29844
+    m_ExpandedIDs: 000000007874000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1992,7 +1992,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000da65000000ca9a3bffffff7f
+    m_ExpandedIDs: 000000007874000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2017,8 +2017,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: ca6a0000
+    m_LastClickedInstanceID: 27338
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:

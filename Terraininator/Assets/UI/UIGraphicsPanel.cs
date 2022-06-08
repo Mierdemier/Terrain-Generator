@@ -66,19 +66,19 @@ public class UIGraphicsPanel : MonoBehaviour
         else
             generator.TerrainTypes[colourIndex].flatColour = colour;
 
-        chunksystem.GenerateTextures();
+        chunksystem.GenerateTextures(Vector2Int.zero, chunksystem.numChunks - new Vector2Int(1, 1));
     }
     public void SetTerrainColourHeight(int index)
     {
         generator.TerrainTypes[index].height = HeightSliders[index].value;
 
-        chunksystem.GenerateTextures();
+        chunksystem.GenerateTextures(Vector2Int.zero, chunksystem.numChunks - new Vector2Int(1, 1));
     }
     public void SetTerrainColourSlope()
     {
         generator.SlopeThreshold = SlopeSlider.value;
 
-        chunksystem.GenerateTextures();
+        chunksystem.GenerateTextures(Vector2Int.zero, chunksystem.numChunks - new Vector2Int(1, 1));
     }
 
     public void SetSky()

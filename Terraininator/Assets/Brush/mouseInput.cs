@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class mouseInput : MonoBehaviour
@@ -7,42 +5,31 @@ public class mouseInput : MonoBehaviour
     [SerializeField]
     ChunkSystem chunkSystem;
 
-    Brush brush;
-    public int radius;
-    public int power;
-    public Color colour;
-    public bool isCircle;
-    private float timer;
-    private float wait;
-
-    void Start() {
-        brush = new BrushFlatten();
-        radius = 20;
-        power = -5;
-        isCircle = true;
-        colour = Color.magenta;
-        timer = 0f;
-        wait = 1f/3f;
-    }
+    [SerializeField]
+    Brush selectedBrush;
+    [SerializeField]
+    Transform Decal;
 
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if(timer >= wait) {
-            timer = 0;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitData;
+
+        if (Physics.Raycast(ray, out hitData))
+        {
+            //Update decal.
+            Decal.position = hitData.point;
+            Decal.rotation = Quaternion.LookRotation(hitData.normal, Vector3.forward);
+            Decal.localScale = new Vector3(selectedBrush.GetRadius() * 2f, selectedBrush.GetRadius() * 2f, 0.1f);
 
             //Left mouse button is clicked.
-            if(Input.GetMouseButtonDown(0)){
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hitData;
-                if (Physics.Raycast(ray, out hitData)){
-                    Vector3 hitPosition = hitData.point;
-
-                    //Do something
-                    brush.Apply(chunkSystem, hitData, this.radius, this.power, this.colour, this.isCircle);
-                }
+            if(Input.GetMouseButton(0))
+            {
+                //Apply brush to affected area.
+                selectedBrush.Apply(chunkSystem, hitData, Time.deltaTime);
             }
         }
     }
+
 }

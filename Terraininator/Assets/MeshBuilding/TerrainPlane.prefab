@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6813269490486257898}
   - component: {fileID: 6813269490486257896}
   - component: {fileID: 6813269490486257903}
+  - component: {fileID: -9036402686734456900}
   m_Layer: 0
   m_Name: TerrainPlane
   m_TagString: Untagged
@@ -98,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   filter: {fileID: 6813269490486257901}
+  collider: {fileID: -9036402686734456900}
 --- !u!114 &6813269490486257903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,24 +112,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33a5304bf5b464646a9de611ac16ee09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  biomes:
-  - name: Ocean Floor
-    height: 0.01
-    colour: {r: 0.7169812, g: 0.6916163, b: 0.42274833, a: 1}
-  - name: Beach
-    height: 0.03
-    colour: {r: 0.9921569, g: 0.95294124, b: 0.5372549, a: 1}
-  - name: Meadow
-    height: 0.12
-    colour: {r: 0.3058473, g: 0.745283, b: 0.3058473, a: 1}
-  - name: Hill
-    height: 0.3
-    colour: {r: 0.14702742, g: 0.5283019, b: 0.14702742, a: 1}
-  - name: Mountain
-    height: 0.8
-    colour: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  - name: Top
-    height: 1
-    colour: {r: 0.7905838, g: 0.881936, b: 0.8867924, a: 1}
   meshRenderer: {fileID: 6813269490486257898}
-  colourCalculator: {fileID: 7200000, guid: 0baed4bef9b14c0469d6a685c9e54643, type: 3}
+--- !u!64 &-9036402686734456900
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6813269490486257897}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
