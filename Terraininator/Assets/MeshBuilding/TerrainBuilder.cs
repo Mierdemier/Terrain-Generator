@@ -24,7 +24,6 @@ public class TerrainBuilder : MonoBehaviour
     Vector2[] uvs; //UV-coordinates are used to map textures to a mesh to colour it in.
     Mesh mesh;  //The data of the complete model.
 
-
     //Generates a subsection of a heightmap. 
     //(This is more performant than creating a new heightmap from that subsection)
     public void GenerateMesh (float[,] heightmap, Vector2Int start, int size)

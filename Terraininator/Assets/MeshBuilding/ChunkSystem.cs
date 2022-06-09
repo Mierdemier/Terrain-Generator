@@ -11,7 +11,7 @@ public class ChunkSystem : MonoBehaviour
 
     [Range(8, 248)]
     //The size of each (square) chunk. Must be a multiple of 8!
-    public int ChunkSize = 200;
+    public int ChunkSize = 248;
     public Vector2Int numChunks;
     [SerializeField]
     GameObject ChunkPrefab;
@@ -30,6 +30,9 @@ public class ChunkSystem : MonoBehaviour
 
     void Start()
     {
+        //Find player's preferred canvas size, or make one up if he didn't specify.
+        numChunks = new Vector2Int(PlayerPrefs.GetInt("xChunks", 2), PlayerPrefs.GetInt("yChunks", 2));
+
         //Find generator.
         generator = GetComponent<ProceduralGenerator>();
 

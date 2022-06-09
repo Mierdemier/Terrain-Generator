@@ -22,6 +22,7 @@ public class mouseInput : MonoBehaviour
             if (Physics.Raycast(ray, out hitData))
             {
                 //Update decal.
+                Decal.gameObject.SetActive(true);
                 Decal.position = hitData.point + Vector3.up;
                 Decal.localScale = new Vector3(selectedBrush.GetRadius() , selectedBrush.GetRadius(), 0.1f);
 
@@ -33,8 +34,12 @@ public class mouseInput : MonoBehaviour
                 }
                 if (Input.GetMouseButtonUp(0))
                     selectedBrush.Finish(chunkSystem, hitData);
+            }
+            else
+                Decal.gameObject.SetActive(false);
         }
-        }
+        else
+            Decal.gameObject.SetActive(false);
     }
 
 }
