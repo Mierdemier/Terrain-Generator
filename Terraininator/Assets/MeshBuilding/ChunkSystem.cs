@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 [RequireComponent(typeof(ProceduralGenerator))]
 //The ChunkSystem is the central class that stores the state of the entire terrain as a whole.
@@ -20,8 +19,12 @@ public class ChunkSystem : MonoBehaviour
 
 
     ProceduralGenerator generator;
+    //You can access the HM/CM if you really need to (prefer to just pass it as a parameter)
+    //But only my boy Chunky is allowed to edit it.
     float[,] globalHM;  //Global heightmap, don't lose this!
+    public float[,] GlobalHM {get {return globalHM;} } 
     Color[,] globalColours; //Global colour map.
+    public Color[,] GlobalColours {get {return globalColours;} }
 
     TerrainBuilder[,] chunks; //Contains references to every chunk.
     bool[,] chunkCollisionDirty; //Stores whether the chunk needs to get new collider.
@@ -30,32 +33,36 @@ public class ChunkSystem : MonoBehaviour
 
     void Start()
     {
-        //Find player's preferred canvas size, or make one up if he didn't specify.
-        numChunks = new Vector2Int(PlayerPrefs.GetInt("xChunks", 2), PlayerPrefs.GetInt("yChunks", 2));
-
         //Find generator.
         generator = GetComponent<ProceduralGenerator>();
+        generator.Seed = new Vector2(Random.Range(0f, 10000f), Random.Range(0f, 10000f));
 
-        //Spawn terrain chunks
-        chunks = new TerrainBuilder[numChunks.x , numChunks.y];
-        chunkCollisionDirty = new bool[numChunks.x, numChunks.y];
-
-        for(int x = 0; x < numChunks.x; x++)
+        //If we're not loading any save, create a new map and procedurally generate some starting terrain.
+        if (!PlayerPrefs.HasKey("save"))
         {
-            for (int z = 0; z < numChunks.y; z++)
-            {
-                //Create a new GameObject in the correct position to hold the chunk.
-                GameObject newChunk = Instantiate(ChunkPrefab, 
-                transform.position + new Vector3(x * (ChunkSize - 1), 0, z * (ChunkSize - 1)), 
-                Quaternion.identity);
-                
-                //Store a reference to the chunk.
-                chunks[x,z] = newChunk.GetComponent<TerrainBuilder>();
-            }
-        }
+            //Find player's preferred canvas size, or make one up if he didn't specify.
+            numChunks = new Vector2Int(PlayerPrefs.GetInt("xChunks", 2), PlayerPrefs.GetInt("yChunks", 2));
 
-        //Render the heightmap using the chunks you made.
-        GenerateFromScratch();
+            //Spawn terrain chunks
+            chunks = new TerrainBuilder[numChunks.x , numChunks.y];
+            chunkCollisionDirty = new bool[numChunks.x, numChunks.y];
+
+            for(int x = 0; x < numChunks.x; x++)
+            {
+                for (int z = 0; z < numChunks.y; z++)
+                {
+                    //Create a new GameObject in the correct position to hold the chunk.
+                        GameObject newChunk = Instantiate(ChunkPrefab, 
+                    transform.position + new Vector3(x * (ChunkSize - 1), 0, z * (ChunkSize - 1)), 
+                    Quaternion.identity);
+                
+                 //Store a reference to the chunk.
+                    chunks[x,z] = newChunk.GetComponent<TerrainBuilder>();
+                }
+            }
+
+            GenerateFromScratch();
+        }
     }
 
     //END IS INCLUSIVE!!!
@@ -125,6 +132,46 @@ public class ChunkSystem : MonoBehaviour
         GenerateMeshes(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
         RegenerateCollisions();
         GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1), true);
+    }
+
+    public void GenerateFromSave(Save save)
+    {
+        //Spawn terrain chunks
+        numChunks = new Vector2Int(save.xChunks, save.zChunks);
+        chunks = new TerrainBuilder[numChunks.x , numChunks.y];
+        chunkCollisionDirty = new bool[numChunks.x, numChunks.y];
+
+        for(int x = 0; x < numChunks.x; x++)
+        {
+            for (int z = 0; z < numChunks.y; z++)
+            {
+                //Create a new GameObject in the correct position to hold the chunk.
+                GameObject newChunk = Instantiate(ChunkPrefab, 
+                transform.position + new Vector3(x * (ChunkSize - 1), 0, z * (ChunkSize - 1)), 
+                Quaternion.identity);
+                
+                //Store a reference to the chunk.
+                chunks[x,z] = newChunk.GetComponent<TerrainBuilder>();
+            }
+        }
+
+        int xSize = save.savedHM.GetLength(0);
+        int zSize = save.savedHM.GetLength(1);
+        globalHM = new float[xSize, zSize];
+        globalColours = new Color[xSize, zSize];
+
+        for (int x = 0; x < xSize; x++)
+        {
+            for (int z = 0; z < zSize; z++)
+            {
+                globalHM[x,z] = save.savedHM[x,z];
+                globalColours[x,z] = save.savedColours[x,z].ToColour();
+            }
+        }
+
+        GenerateMeshes(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
+        RegenerateCollisions();
+        GenerateTextures(Vector2Int.zero, numChunks - new Vector2Int(1, 1));
     }
 
     public void AlterHM(float[,] alteration, Vector2Int start)

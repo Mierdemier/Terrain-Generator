@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     GameObject LoadMenu;
     [SerializeField]
-    Image BackgroundFilter;
+    Image Filter;
 
     [Space]
 
@@ -24,6 +24,7 @@ public class MainMenu : MonoBehaviour
     {
         PlayerPrefs.SetInt("xChunks", int.Parse(xChunks.text));
         PlayerPrefs.SetFloat("yChunks", int.Parse(yChunks.text));
+        PlayerPrefs.DeleteKey("save");
 
         StartCoroutine(LoadMainScene());
     }
@@ -52,15 +53,16 @@ public class MainMenu : MonoBehaviour
     {
         //Set off spawn effect.
 
-        while (BackgroundFilter.color.a < 1)
+        while (Filter.color.a < 1)
         {
-            BackgroundFilter.color = new Color(BackgroundFilter.color.r, BackgroundFilter.color.g, BackgroundFilter.color.b,
-            BackgroundFilter.color.a + 0.05f);
+            Filter.color = new Color(Filter.color.r, Filter.color.g, Filter.color.b,
+            Filter.color.a + 0.05f);
 
             yield return new WaitForSeconds(0.05f);
         }
 
         SceneManager.LoadSceneAsync(1);
+        yield break;
     }
 
 }

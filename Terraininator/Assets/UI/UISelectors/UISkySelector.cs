@@ -61,6 +61,9 @@ public class UISkySelector : MonoBehaviour
     {
         return Objects[selection];
     }
+
+    //For the rare case that you need to know the actual index and not just the object.
+    public int GetIndex() {return selection;}
 }
 
 [System.Serializable]

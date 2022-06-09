@@ -6,7 +6,7 @@ public class UIPauseMenu : MonoBehaviour
 {
     [SerializeField]
     GameObject PauseMenu;
-    bool paused;
+    bool paused = false;
 
     void Update()
     {
@@ -24,6 +24,8 @@ public class UIPauseMenu : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        if (paused)
+            TogglePause(); //TIL setting the timescale to 0 is permanent even if you load another scene.
         SceneManager.LoadSceneAsync(0);
     }
 }
