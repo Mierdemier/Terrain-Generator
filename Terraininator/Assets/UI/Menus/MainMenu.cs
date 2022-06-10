@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -41,7 +42,8 @@ public class MainMenu : MonoBehaviour
 
     public void OpenReadme()
     {
-        Application.OpenURL(Application.persistentDataPath + "/Readme.md");
+        string path = Assembly.GetEntryAssembly().Location + "/Readme.md";
+        Application.OpenURL(Assembly.GetEntryAssembly().Location + "/Readme.md");
     }
 
     public void Quit()

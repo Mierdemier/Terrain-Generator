@@ -28,6 +28,7 @@ public class UIGraphicsPanel : MonoBehaviour
 
     [SerializeField]
     UISkySelector SkySelector;
+
     [Space]
 
     [SerializeField]
