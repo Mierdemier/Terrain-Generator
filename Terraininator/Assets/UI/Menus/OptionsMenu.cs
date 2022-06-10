@@ -2,6 +2,9 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
+//This class is a collection of utility methods for use in the options menu.
+//  At Start() it updates the resolution dropdown with a list of possible resolutions,
+//      and selects a default one based on screen resolution.
 public class OptionsMenu : MonoBehaviour
 {
     [SerializeField]

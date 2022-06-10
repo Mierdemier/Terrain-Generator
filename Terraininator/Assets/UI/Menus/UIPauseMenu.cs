@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+//A collection of utility methods to be called by buttons in the pause menu.
 public class UIPauseMenu : MonoBehaviour
 {
     [SerializeField]

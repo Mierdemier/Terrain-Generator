@@ -1,6 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+//The UIGraphicsPanel is a collection of methods to be stored in the graphics tab and triggered by UI elements there.
+//This ended up being a bit messy, because of quirks in the UnityEngine.UI system.
+
+//Basically, if a method can be done using only one argument, we pass in that argument using whatever slider sets it.
+//But for more complex methods we read the UI elements directly through this script, because Unity doesn't like when you
+//make a UI element trigger multiple parameters in a function.
 public class UIGraphicsPanel : MonoBehaviour
 {
     [Header("References")]
@@ -41,6 +47,8 @@ public class UIGraphicsPanel : MonoBehaviour
         WaterLevelSlider.value = OceanTransform.position.y;
         WaterShallowSquare.color = OceanMat.GetColor("_ShallowColour");
         WaterDeepSquare.color = OceanMat.GetColor("_DeepColour");
+
+        //Just set the terrain and sky to the default values manually.
     }
 
     public void SetWaterLevel(float level)

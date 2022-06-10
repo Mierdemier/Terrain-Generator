@@ -1,7 +1,10 @@
 using UnityEngine;
+using System;
 
 public class TerrainBrush : Brush
 {
+    //I made this back when we accidentally calculated the alteration every single frame, to optimise the calculation.
+    //But I left it here anyway because it can't make things worse.
     static readonly float[,] PRECOMPUTED_DIST = new float[65,65]
     {
         { 45.2548f, 44.5533f, 43.8634f, 43.1856f, 42.5206f, 41.8688f, 41.2311f, 40.6079f, 40f, 39.4081f, 38.833f, 38.2753f, 37.7359f, 37.2156f, 36.7151f, 36.2353f, 35.7771f, 35.3412f, 34.9285f, 34.5398f, 34.176f, 33.8378f, 33.5261f, 33.2415f, 32.9848f, 32.7567f, 32.5576f, 32.3883f, 32.249f, 32.1403f, 32.0624f, 32.0156f, 32f, 32.0156f, 32.0624f, 32.1403f, 32.249f, 32.3883f, 32.5576f, 32.7567f, 32.9848f, 33.2415f, 33.5261f, 33.8378f, 34.176f, 34.5398f, 34.9285f, 35.3412f, 35.7771f, 36.2353f, 36.7151f, 37.2156f, 37.7359f, 38.2753f, 38.833f, 39.4081f, 40f, 40.6079f, 41.2311f, 41.8688f, 42.5206f, 43.1856f, 43.8634f, 44.5533f, 45.2548f  },
@@ -71,16 +74,13 @@ public class TerrainBrush : Brush
         { 45.2548f, 44.5533f, 43.8634f, 43.1856f, 42.5206f, 41.8688f, 41.2311f, 40.6079f, 40f, 39.4081f, 38.833f, 38.2753f, 37.7359f, 37.2156f, 36.7151f, 36.2353f, 35.7771f, 35.3412f, 34.9285f, 34.5398f, 34.176f, 33.8378f, 33.5261f, 33.2415f, 32.9848f, 32.7567f, 32.5576f, 32.3883f, 32.249f, 32.1403f, 32.0624f, 32.0156f, 32f, 32.0156f, 32.0624f, 32.1403f, 32.249f, 32.3883f, 32.5576f, 32.7567f, 32.9848f, 33.2415f, 33.5261f, 33.8378f, 34.176f, 34.5398f, 34.9285f, 35.3412f, 35.7771f, 36.2353f, 36.7151f, 37.2156f, 37.7359f, 38.2753f, 38.833f, 39.4081f, 40f, 40.6079f, 41.2311f, 41.8688f, 42.5206f, 43.1856f, 43.8634f, 44.5533f, 45.2548f }
     };
 
+    //Instead of altering the heightmap directly, we store an alteration and apply that.
+    //This allows us to only recalculate the alteration when the brush settings are changed instead of every frame.
+    float[,] alteration;
 
-    public override void Apply(ChunkSystem chunkSystem, RaycastHit hitData, float timeApplied)
+    public override void RecalculateAlteration()
     {
-        Debug.Log(radius);
-        Vector3 hitPosition = hitData.point;
-        int xCoor = (int)hitPosition.x;
-        int zCoor = (int)hitPosition.z;
-
-        //Edit terrain in heightmap.
-        float[,] alteration = new float[2 * radius + 1, 2 * radius + 1];
+        alteration = new float[2 * radius + 1, 2 * radius +1];
         for (int x = 0; x <= radius; x++)
         {
             for (int z = 0; z <= radius; z++)
@@ -90,16 +90,25 @@ public class TerrainBrush : Brush
                 if (dist >= radius)
                     alteration[x,z] = 0;
                 else
-                    alteration[x,z] = Mathf.Cos((dist * Mathf.PI) / (radius * 2)) * timeApplied;
+                    alteration[x,z] = Mathf.Cos((dist * Mathf.PI) / (radius * 2));
                 
+                //Remap the intensity from 0 - 10 to -15 - 15
                 alteration[x,z] *= 3 * (intensity - 5f);
 
-                //lifehack
+                //lifehack:
+                //Circles are quadrilaterally symmetrical. So no need to calculate for every point.
                 alteration[2 * radius - x , z] = alteration[x,z];
                 alteration[x, 2 * radius - z] = alteration[x,z];
                 alteration[2 * radius - x, 2 * radius - z] = alteration[x,z];
             }
         }
+    }
+
+    public override void Apply(ChunkSystem chunkSystem, RaycastHit hitData)
+    {
+        Vector3 hitPosition = hitData.point;
+        int xCoor = (int)hitPosition.x;
+        int zCoor = (int)hitPosition.z;
 
         chunkSystem.AlterHM(alteration, new Vector2Int(xCoor - radius, zCoor - radius));
     }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+//Moves the camera.
 public class CameraScript : MonoBehaviour
 {
     [SerializeField]

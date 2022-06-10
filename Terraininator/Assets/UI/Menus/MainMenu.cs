@@ -5,12 +5,15 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
+//This class is a collection of utility functions to be called by buttons in the main menu.
 public class MainMenu : MonoBehaviour
 {
     [SerializeField]
     GameObject OptionsMenu;
     [SerializeField]
     GameObject LoadMenu;
+    [SerializeField]
+    GameObject Readme;
     [SerializeField]
     Image Filter;
 
@@ -23,10 +26,12 @@ public class MainMenu : MonoBehaviour
 
     public void NewCanvas()
     {
-        PlayerPrefs.SetInt("xChunks", int.Parse(xChunks.text));
-        PlayerPrefs.SetFloat("yChunks", int.Parse(yChunks.text));
-        PlayerPrefs.DeleteKey("save");
+        PlayerPrefs.SetInt("xChunks", int.Parse(xChunks.text)); //This communicates to the other scene what size canvas we want.
+        PlayerPrefs.SetInt("zChunks", int.Parse(yChunks.text));
+        
+        PlayerPrefs.DeleteKey("save");  //Don't load any saves if we're making a new canvas.
 
+        //A coroutine is a function that executes over time.
         StartCoroutine(LoadMainScene());
     }
 
@@ -40,10 +45,9 @@ public class MainMenu : MonoBehaviour
         LoadMenu.SetActive(!LoadMenu.activeInHierarchy);
     }
 
-    public void OpenReadme()
+    public void ToggleReadme()
     {
-        string path = Assembly.GetEntryAssembly().Location + "/Readme.md";
-        Application.OpenURL(Assembly.GetEntryAssembly().Location + "/Readme.md");
+        Readme.SetActive(!Readme.activeInHierarchy);
     }
 
     public void Quit()
@@ -53,8 +57,7 @@ public class MainMenu : MonoBehaviour
 
     IEnumerator LoadMainScene()
     {
-        //Set off spawn effect.
-
+        //Slowly fade out the menu.
         while (Filter.color.a < 1)
         {
             Filter.color = new Color(Filter.color.r, Filter.color.g, Filter.color.b,
@@ -63,6 +66,7 @@ public class MainMenu : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
 
+        //Load main scene.
         SceneManager.LoadSceneAsync(1);
         yield break;
     }

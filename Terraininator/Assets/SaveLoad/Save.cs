@@ -1,10 +1,12 @@
 using UnityEngine;
 using System;
 
+//The save class is not a MonoBehaviour; it is not meant to be 'executed'.
+//Instead, it is used to store a saved canvas in serialisable format.
 [System.Serializable]
 public class Save
 {
-    //Unity Colours are not serializable.
+    //Unity Colours are not serializable. So we create our own struct.
     [System.Serializable]
     public struct ColourState
     {
@@ -25,6 +27,8 @@ public class Save
         }
 
     }
+
+    //Stores size of terrain.
     public int xChunks;
     public int zChunks;
 

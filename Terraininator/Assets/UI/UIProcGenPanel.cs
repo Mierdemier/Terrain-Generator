@@ -8,7 +8,6 @@ using TMPro;
 //  Generate() should be called whenever the 'Generate!' button is pressed.
 //      It communicates the values from the UI to the ChunkSystem/ProceduralGenerator.
 //      And tells them to make a new map.
-
 public class UIProcGenPanel : MonoBehaviour
 {
     [Header("Script References")]

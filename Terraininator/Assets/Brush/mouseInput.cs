@@ -14,6 +14,7 @@ public class mouseInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Only show the brush when the mouse is not over the UI.
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -30,7 +31,7 @@ public class mouseInput : MonoBehaviour
                 if(Input.GetMouseButton(0))
                 {
                     //Apply brush to affected area.
-                    selectedBrush.Apply(chunkSystem, hitData, Time.deltaTime);
+                    selectedBrush.Apply(chunkSystem, hitData);
                 }
                 if (Input.GetMouseButtonUp(0))
                     selectedBrush.Finish(chunkSystem, hitData);

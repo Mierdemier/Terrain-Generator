@@ -1,8 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//This class keeps track of a grid of coloured squares, and changes their size at runtime.
+//It tries to keep the spacing of the grid intact.
+
+//Unfortunately due to some quirks in the UnityEngine.UI system we had to write some of these methods in a weird way.
+//So make sure you're using them correctly!
 public class UIColourGrid : MonoBehaviour
 {
+    //w = width h = height
     [SerializeField]
     float wConversionFactor;
     [SerializeField]
@@ -31,12 +38,16 @@ public class UIColourGrid : MonoBehaviour
     {
         row = i;
     }
+
+    //ChangeSquareWidth changes the actual squares themselves.
     public void ChangeSquareWidth(float sliderValue)
     {
         //You cannot directly set the size of the last column!
         if (column >= Columns - 1)
             return;
 
+        //Make sure the sliders don't go outside of their bounds.
+        //A slider should not go further than the slider after it.
         if (wSliders.Length > column + 1 && sliderValue > wSliders[column + 1].value)
         {
             wSliders[column].value = wSliders[column + 1].value;
@@ -57,11 +68,13 @@ public class UIColourGrid : MonoBehaviour
         {
             ColourSquares[i].sizeDelta = new Vector2(newSize, ColourSquares[i].sizeDelta.y);
 
+            //The square after this one should also be resized to keep the size of the grid the same.
             ColourSquares[i + 1].sizeDelta = 
             new Vector2(ColourSquares[i + 1].sizeDelta.x - (newSize - oldSize),  ColourSquares[i + 1].sizeDelta.y);
         }
     }
 
+    //ChangeSquareHeight changes the height of a *layout object* that contains a row of squares.
     public void ChangeSquareHeight(float sliderValue)
     {
         //You cannot directly set the size of the last row!
@@ -88,6 +101,7 @@ public class UIColourGrid : MonoBehaviour
         RowHolders[row].GetComponent<HorizontalLayoutGroup>().SetLayoutHorizontal();
         RowHolders[row].GetComponent<HorizontalLayoutGroup>().SetLayoutVertical();
 
+        //The row after this one should also be resized to keep the size of the grid the same.
         RowHolders[row + 1].sizeDelta = 
         new Vector2(RowHolders[row + 1].sizeDelta.x, RowHolders[row + 1].sizeDelta.y - (newSize - oldSize));
         RowHolders[row+1].GetComponent<HorizontalLayoutGroup>().SetLayoutHorizontal();

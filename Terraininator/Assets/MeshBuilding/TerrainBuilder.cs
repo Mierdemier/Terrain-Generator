@@ -23,15 +23,25 @@ public class TerrainBuilder : MonoBehaviour
                 //Obviously the length of this array must be a factor of 3, since a triangle has 3 points.
     Vector2[] uvs; //UV-coordinates are used to map textures to a mesh to colour it in.
     Mesh mesh;  //The data of the complete model.
+    bool alreadyHasMesh = false;    //Used so we don't allocate unneccessary memory to new Mesh().
 
     //Generates a subsection of a heightmap. 
     //(This is more performant than creating a new heightmap from that subsection)
     public void GenerateMesh (float[,] heightmap, Vector2Int start, int size)
     {
         //Set up basic variables.
-        mesh = new Mesh();
-        verts = new Vector3[size * size];
-        tris = new int[(size - 1) * (size - 1) * 6];
+        //I finally found the memory leak thank god! It was allocating an entire mesh every time we changed something.
+        //(the mesh isn't freed because renderer keeps referencing it)
+        if (!alreadyHasMesh)
+        {
+            //Mesh size doesn't change at runtime. Size parameter is purely a development convenience.
+            mesh = new Mesh();
+            verts = new Vector3[size * size];
+            tris = new int[(size - 1) * (size - 1) * 6];
+            uvs = new Vector2[verts.Length];
+
+            alreadyHasMesh = true;
+        }
 
         //Create the shape.
         int v = 0, t = 0; //These numbers keep track of the index of the current vertex/triangle respectively.
@@ -56,7 +66,6 @@ public class TerrainBuilder : MonoBehaviour
         } 
 
         //Attach uv coordinates to the shape in case it needs colours.
-        uvs = new Vector2[verts.Length];
         for (int x = 0, i = 0; x < size; x++)
         {
             for (int z = 0; z < size; z++)

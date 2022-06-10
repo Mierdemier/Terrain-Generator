@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//A small class that just changes it's image to a random one from a list.
 [RequireComponent(typeof(Image))]
 public class MenuBackground : MonoBehaviour
 {
@@ -8,7 +10,6 @@ public class MenuBackground : MonoBehaviour
     Sprite[] Images;
 
     Image panel;
-
 
     void Start()
     {

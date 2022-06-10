@@ -2,6 +2,10 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+//This class controls the UI for the brushes.
+//It has two public methods, intended to be called by UnityEngine.UI elements:
+//      UpdateBrush() sets the currently selected brush based on the selector and updates UI to show its settings.
+//      SetBrushSettings() takes information from the UI to set the settings of the currently selected brush.
 public class UIBrushPanel : MonoBehaviour
 {
     [SerializeField]
@@ -13,7 +17,7 @@ public class UIBrushPanel : MonoBehaviour
     [SerializeField]
     Slider IntensitySlider;
     [SerializeField]
-    GameObject Marks;
+    GameObject Marks;               //Some brushes use special marks to indicate extra information.
     [SerializeField]
     Image ColourSquare;
 
@@ -44,6 +48,8 @@ public class UIBrushPanel : MonoBehaviour
         brush.radius = (int)RadiusSlider.value;
         brush.intensity = IntensitySlider.value;
         brush.colour = ColourSquare.color;
+
+        brush.RecalculateAlteration();
     }
 
 }

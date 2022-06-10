@@ -2,6 +2,9 @@ using UnityEngine;
 using System.IO;
 using TMPro;
 
+//This class handles the *UI* for saving to a file. See the SaverLoader for the actual serialisation.
+//  At Start() it fills the text box with the current save's name, to make overwriting the current save easier.
+//  AttemptSave() sees if it can save using the name currently in the text box, and does it if possible.
 public class UISaveMenu : MonoBehaviour
 {
     [SerializeField]

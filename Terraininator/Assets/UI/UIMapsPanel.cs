@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//This class is used to apply maps from the MapTab.
 public class UIMapsPanel : MonoBehaviour
 {
     [SerializeField]
