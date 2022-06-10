@@ -2167,12 +2167,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf0d64959921dc146823d1e025855569, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wConversionFactor: 0
+  wConversionFactor: 42
   hConversionFactor: 0
-  ColourSquares: []
+  ColourSquares:
+  - {fileID: 1965491552}
+  - {fileID: 1500185540}
   RowHolders: []
-  Columns: 0
-  wSliders: []
+  Columns: 2
+  wSliders:
+  - {fileID: 1747660125}
   hSliders: []
 --- !u!114 &234181770
 MonoBehaviour:
@@ -9760,7 +9763,6 @@ MonoBehaviour:
   ChunkPrefab: {fileID: 6813269490486257897, guid: 1099475a01e8ecd4d8be4c5dd0f0b454,
     type: 3}
   Camera: {fileID: 1724719660}
-  cameraScript: {fileID: 0}
 --- !u!114 &778203016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22671,7 +22673,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 234181769}
         m_TargetAssemblyTypeName: UIColourGrid, Assembly-CSharp
-        m_MethodName: SetSquareIndex
+        m_MethodName: SetColumn
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -33,6 +33,11 @@ public class UISaveMenu : MonoBehaviour
         string name = NameInput.text;
 
         //Validate input.
+        if (name.Length > 30)
+        {
+            ResultText.text = "Please don't use names longer than 30 characters . It breaks our UI :(";
+            return;
+        }
         foreach (char dontuse in forbiddenChars)
         {
             if (name.Contains(dontuse))
