@@ -4,15 +4,23 @@ using UnityEngine;
 //to apply the brush to the chunk system.
 public abstract class Brush : MonoBehaviour
 {
-    protected int radius = 5;
-    protected float intensity = 6f;
-    protected Color colour = Color.magenta;
+    //All brushes have a radius.
+    public int radius = 5;
+
+    //Some brushes might not have a variable intensity.
+    // Some brushes need extra UI elements to make it clear what intensity does.
+    //Bools like these are used to update the UI.
+    public bool useIntensity;
+    public bool useMarks;
+    public float intensity = 6f;
+
+    //Not all brushes have a colour.
+    public bool useColour;
+    public Color colour = Color.magenta;
 
     //Called every frame brush is applied.
     public abstract void Apply(ChunkSystem chunkSystem, RaycastHit hitData, float timeApplied);
 
     //Called frame after brush is applied.
     public abstract void Finish(ChunkSystem chunkSystem, RaycastHit hitData);
-
-    public int GetRadius() {return radius;}
 }

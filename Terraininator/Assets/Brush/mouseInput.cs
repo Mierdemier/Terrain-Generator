@@ -24,7 +24,7 @@ public class mouseInput : MonoBehaviour
                 //Update decal.
                 Decal.gameObject.SetActive(true);
                 Decal.position = hitData.point + Vector3.up;
-                Decal.localScale = new Vector3(selectedBrush.GetRadius() , selectedBrush.GetRadius(), 0.1f);
+                Decal.localScale = new Vector3(selectedBrush.radius , selectedBrush.radius, 0.1f);
 
                 //Left mouse button is clicked.
                 if(Input.GetMouseButton(0))
@@ -40,6 +40,11 @@ public class mouseInput : MonoBehaviour
         }
         else
             Decal.gameObject.SetActive(false);
+    }
+
+    public void SetBrush(Brush brush)
+    {
+        selectedBrush = brush;
     }
 
 }

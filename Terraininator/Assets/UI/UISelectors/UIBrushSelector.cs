@@ -10,15 +10,17 @@ using UnityEngine.UI;
 
 //Unity does not allow you to make generic components :(
 //So we will have to create a copy of this class for every type of selector (luckily only 2 right now)
-public class UITextureSelector : MonoBehaviour
+public class UIBrushSelector : MonoBehaviour
 {
     [Header("Selectables")]
     [SerializeField]
     string[] Names;
     [SerializeField]
+    string[] Descriptions; //Only brushes have descriptions.
+    [SerializeField]
     Sprite[] Sprites;
     [SerializeField]
-    Texture2D[]  Objects;
+    Brush[]  Objects;
 
     [Header("Display")]
     [SerializeField]
@@ -29,6 +31,8 @@ public class UITextureSelector : MonoBehaviour
     Image nextImage;
     [SerializeField]
     TMP_Text nameText;  //Optional. Leave it as null if you don't need it.
+    [SerializeField]
+    TMP_Text descriptionText; 
 
     int selection = 0;
 
@@ -51,9 +55,11 @@ public class UITextureSelector : MonoBehaviour
 
         if (nameText != null)
             nameText.text = Names[selection];
+        if (descriptionText != null)
+            descriptionText.text = Descriptions[selection];
     }
 
-    public Texture2D GetSelected()
+    public Brush GetSelected()
     {
         return Objects[selection];
     }
