@@ -17,6 +17,11 @@ public class UIBrushPanel : MonoBehaviour
     [SerializeField]
     Image ColourSquare;
 
+    void Start()
+    {
+        UpdateBrush();
+    }
+
     public void UpdateBrush()
     {
         Brush brush = BrushSelector.GetSelected();
@@ -31,4 +36,14 @@ public class UIBrushPanel : MonoBehaviour
 
         Mouse.SetBrush(brush);
     }
+
+    public void SetBrushSettings()
+    {
+        Brush brush = BrushSelector.GetSelected();
+
+        brush.radius = (int)RadiusSlider.value;
+        brush.intensity = IntensitySlider.value;
+        brush.colour = ColourSquare.color;
+    }
+
 }
